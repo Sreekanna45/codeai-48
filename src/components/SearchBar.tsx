@@ -90,6 +90,76 @@ export const SearchBar = ({ onSearchResult }: { onSearchResult: (info: LanguageI
           "function add(a: number, b: number): number { return a + b; }",
           "interface User { name: string; age: number; }"
         ]
+      },
+      ruby: {
+        name: "Ruby",
+        description: "A dynamic, open-source programming language with a focus on simplicity and productivity.",
+        creator: "Yukihiro Matsumoto",
+        year: 1995,
+        uses: ["Web Development", "Scripting", "DevOps", "Data Processing"],
+        advantages: ["Elegant syntax", "Rich libraries", "Active community", "Developer happiness"],
+        disadvantages: ["Runtime speed", "Memory usage", "Threading model"],
+        examples: [
+          "puts 'Hello, World!'",
+          "def add(a, b)\n  a + b\nend",
+          "users.map { |user| user.name.upcase }"
+        ]
+      },
+      swift: {
+        name: "Swift",
+        description: "A powerful and intuitive programming language for iOS, macOS, and beyond.",
+        creator: "Apple Inc.",
+        year: 2014,
+        uses: ["iOS Development", "macOS Development", "Server-side Development", "Systems Programming"],
+        advantages: ["Safety", "Performance", "Modern syntax", "Apple ecosystem"],
+        disadvantages: ["Limited to Apple", "Young ecosystem", "Frequent updates"],
+        examples: [
+          "print('Hello, World!')",
+          "func add(_ a: Int, _ b: Int) -> Int { return a + b }",
+          "let numbers = [1, 2, 3].map { $0 * 2 }"
+        ]
+      },
+      go: {
+        name: "Go",
+        description: "A statically typed, compiled programming language designed at Google.",
+        creator: "Robert Griesemer, Rob Pike, and Ken Thompson",
+        year: 2009,
+        uses: ["Cloud Services", "System Programming", "Web Services", "DevOps"],
+        advantages: ["Simplicity", "Strong standard library", "Built-in concurrency", "Fast compilation"],
+        disadvantages: ["Limited generics", "No exceptions", "Simple type system"],
+        examples: [
+          "fmt.Println('Hello, World!')",
+          "func add(a, b int) int { return a + b }",
+          "go func() { fmt.Println('Concurrent execution') }()"
+        ]
+      },
+      rust: {
+        name: "Rust",
+        description: "A systems programming language that runs blazingly fast, prevents segfaults, and guarantees thread safety.",
+        creator: "Graydon Hoare",
+        year: 2010,
+        uses: ["Systems Programming", "WebAssembly", "Network Services", "Embedded Systems"],
+        advantages: ["Memory safety", "Zero-cost abstractions", "Modern tooling", "Cross-platform"],
+        disadvantages: ["Steep learning curve", "Strict compiler", "Longer development time"],
+        examples: [
+          "fn main() {\n    println!('Hello, World!');\n}",
+          "fn add(a: i32, b: i32) -> i32 { a + b }",
+          "let numbers: Vec<i32> = vec![1, 2, 3];"
+        ]
+      },
+      kotlin: {
+        name: "Kotlin",
+        description: "A modern programming language that makes developers happier, designed for JVM and Android.",
+        creator: "JetBrains",
+        year: 2011,
+        uses: ["Android Development", "Server-side Development", "Cross-platform Mobile", "Web Development"],
+        advantages: ["Java interoperability", "Null safety", "Concise syntax", "Modern features"],
+        disadvantages: ["Compilation speed", "Learning curve for Java devs", "Smaller community"],
+        examples: [
+          "println('Hello, World!')",
+          "fun add(a: Int, b: Int) = a + b",
+          "data class User(val name: String, val age: Int)"
+        ]
       }
     };
 
