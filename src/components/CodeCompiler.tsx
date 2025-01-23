@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 const SUPPORTED_LANGUAGES = [
   { id: 'javascript', name: 'JavaScript' },
@@ -15,7 +15,45 @@ export const CodeCompiler = () => {
   const [selectedLang, setSelectedLang] = useState(SUPPORTED_LANGUAGES[0].id);
   const [code, setCode] = useState('');
   const [output, setOutput] = useState('');
+  const [isCompiling, setIsCompiling] = useState(false);
   const { toast } = useToast();
+
+  const compileCode = async (code: string, language: string) => {
+    // This is a mock implementation. In a real app, this would call a compilation API
+    const mockCompile = (code: string, language: string) => {
+      switch (language) {
+        case 'javascript':
+          try {
+            // For demonstration, we're using eval. In production, use a proper sandbox
+            const result = eval(code);
+            return String(result);
+          } catch (error) {
+            throw new Error(`JavaScript Error: ${error}`);
+          }
+        case 'python':
+          return `Python Output:\n${code.includes('print') ? code.replace('print(', '').replace(')', '') : 'No output'}`;
+        case 'java':
+          return `Java Output:\nCompiled successfully\n${code.includes('System.out.println') ? code.split('System.out.println("')[1].split('")')[0] : 'No output'}`;
+        case 'cpp':
+          return `C++ Output:\nCompiled successfully\n${code.includes('cout') ? code.split('cout << "')[1].split('"')[0] : 'No output'}`;
+        case 'ruby':
+          return `Ruby Output:\n${code.includes('puts') ? code.replace('puts ', '') : 'No output'}`;
+        default:
+          return 'Language not supported';
+      }
+    };
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        try {
+          const result = mockCompile(code, language);
+          resolve(result);
+        } catch (error) {
+          resolve(`Error: ${error.message}`);
+        }
+      }, 1000);
+    });
+  };
 
   const handleCompile = async () => {
     if (!code.trim()) {
@@ -27,12 +65,26 @@ export const CodeCompiler = () => {
       return;
     }
 
-    // Here we would integrate with a code execution service
+    setIsCompiling(true);
     setOutput('Compiling...');
-    toast({
-      title: "Compiling code",
-      description: "Please wait while we process your code",
-    });
+    
+    try {
+      const result = await compileCode(code, selectedLang);
+      setOutput(String(result));
+      toast({
+        title: "Code compiled successfully",
+        description: "Check the output below",
+      });
+    } catch (error) {
+      setOutput(`Error: ${error.message}`);
+      toast({
+        title: "Compilation failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsCompiling(false);
+    }
   };
 
   return (
@@ -50,7 +102,9 @@ export const CodeCompiler = () => {
             ))}
           </SelectContent>
         </Select>
-        <Button onClick={handleCompile}>Run Code</Button>
+        <Button onClick={handleCompile} disabled={isCompiling}>
+          {isCompiling ? 'Compiling...' : 'Run Code'}
+        </Button>
       </div>
       
       <textarea
@@ -58,6 +112,7 @@ export const CodeCompiler = () => {
         value={code}
         onChange={(e) => setCode(e.target.value)}
         placeholder="Write your code here..."
+        disabled={isCompiling}
       />
       
       <div className="output-window">
