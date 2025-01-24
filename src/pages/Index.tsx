@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { SearchBar } from '@/components/SearchBar';
-import { TopLanguages } from '@/components/TopLanguages';
-import { CodeCompiler } from '@/components/CodeCompiler';
-import { ManualReview } from '@/components/ManualReview';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { SearchBar } from "@/components/SearchBar";
+import { TopLanguages } from "@/components/TopLanguages";
+import { CodeCompiler } from "@/components/CodeCompiler";
+import { ManualReview } from "@/components/ManualReview";
 import type { LanguageInfo } from '@/data/programmingLanguages';
 
 const Index = () => {
   const [searchResult, setSearchResult] = useState<LanguageInfo | null>(null);
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background p-6">
