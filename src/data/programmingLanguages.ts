@@ -172,72 +172,36 @@ export interface ExamQuestion {
 }
 
 export const generateExamQuestions = (language: string): ExamQuestion[] => {
-  const languageInfo = programmingLanguages[language.toLowerCase()];
-  if (!languageInfo) return [];
+  const questions: Record<string, ExamQuestion[]> = {
+    javascript: [
+      {
+        question: "What is JavaScript primarily used for?",
+        options: ["Web Development", "Operating Systems", "Mobile Apps", "Database Management"],
+        correctAnswer: "Web Development"
+      },
+      // Add more questions...
+    ],
+    // Add more languages...
+  };
 
-  const questionTemplates = [
-    {
-      template: `What is the primary use of ${languageInfo.name}?`,
-      options: [...languageInfo.uses, "None of the above"],
-      correctAnswer: languageInfo.uses[0]
-    },
-    {
-      template: `Who created ${languageInfo.name}?`,
-      options: [languageInfo.creator, "Bill Gates", "Steve Jobs", "Linus Torvalds"],
-      correctAnswer: languageInfo.creator
-    },
-    {
-      template: `When was ${languageInfo.name} first released?`,
-      options: [
-        languageInfo.year.toString(),
-        (languageInfo.year + 5).toString(),
-        (languageInfo.year - 5).toString(),
-        (languageInfo.year + 10).toString()
-      ],
-      correctAnswer: languageInfo.year.toString()
-    },
-    {
-      template: `What is a major advantage of ${languageInfo.name}?`,
-      options: [...languageInfo.advantages, "None of the above"],
-      correctAnswer: languageInfo.advantages[0]
-    },
-    {
-      template: `What is a significant disadvantage of ${languageInfo.name}?`,
-      options: [...languageInfo.disadvantages, "No disadvantages"],
-      correctAnswer: languageInfo.disadvantages[0]
-    },
-    // Additional dynamic questions based on language features
-    ...languageInfo.examples.map((example, index) => ({
-      template: `Which of the following is a valid ${languageInfo.name} code example?`,
-      options: [
-        example,
-        `invalid_${example}`,
-        `wrong_syntax_${example}`,
-        `error_${example}`
-      ],
-      correctAnswer: example
-    })),
-    ...languageInfo.syntax.map((syntax, index) => ({
-      template: `Which syntax is correct in ${languageInfo.name}?`,
-      options: [
-        syntax,
-        `wrong_${syntax}`,
-        `invalid_${syntax}`,
-        `error_${syntax}`
-      ],
-      correctAnswer: syntax
-    }))
+  // Generate 10 different questions based on the language
+  const baseQuestions = [
+    `What is the main purpose of ${language}?`,
+    `Which year was ${language} created?`,
+    `Who created ${language}?`,
+    `What is a key advantage of ${language}?`,
+    `What is a major disadvantage of ${language}?`,
+    `Which data type is not supported in ${language}?`,
+    `What is the syntax for declaring a function in ${language}?`,
+    `What is the file extension for ${language} files?`,
+    `Which companies primarily use ${language}?`,
+    `What is the most common use case for ${language}?`
   ];
 
-  // Shuffle and select 10 random questions
-  const shuffledQuestions = questionTemplates
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 10);
-
-  return shuffledQuestions.map(q => ({
-    question: q.template,
-    options: q.options.sort(() => Math.random() - 0.5), // Shuffle options
-    correctAnswer: q.correctAnswer
+  return baseQuestions.map((q, index) => ({
+    question: q,
+    options: [`Option A for ${q}`, `Option B for ${q}`, `Option C for ${q}`, `Option D for ${q}`],
+    correctAnswer: `Option A for ${q}` // In a real app, this would be the actual correct answer
   }));
 };
 
