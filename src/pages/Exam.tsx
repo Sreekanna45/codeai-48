@@ -21,6 +21,7 @@ const Exam = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [examResults, setExamResults] = useState<ExamResults | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const examData = localStorage.getItem('currentExam');
@@ -31,6 +32,7 @@ const Exam = () => {
     const parsedExam = JSON.parse(examData);
     setCurrentExam(parsedExam);
     setSelectedAnswers(new Array(parsedExam.questions.length).fill(''));
+    setIsLoading(false);
   }, [navigate]);
 
   const handleHomeClick = () => {
@@ -38,12 +40,14 @@ const Exam = () => {
   };
 
   const handleAnswerSelect = (answer: string) => {
+    if (!currentExam) return;
     const newAnswers = [...selectedAnswers];
     newAnswers[currentExam.currentQuestion] = answer;
     setSelectedAnswers(newAnswers);
   };
 
   const handleQuestionChange = (index: number) => {
+    if (!currentExam) return;
     const updatedExam = {
       ...currentExam,
       currentQuestion: index,
@@ -53,6 +57,7 @@ const Exam = () => {
   };
 
   const handleSubmitExam = () => {
+    if (!currentExam) return;
     if (selectedAnswers.some(answer => answer === '')) {
       toast({
         title: "Please answer all questions",
@@ -83,6 +88,34 @@ const Exam = () => {
     setShowResults(true);
     localStorage.removeItem('currentExam');
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background p-6">
+        <div className="container mx-auto max-w-3xl">
+          <div className="flex items-center gap-4 mb-6">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleHomeClick}
+              className="hover:bg-secondary rounded-lg transition-colors"
+            >
+              <Home className="h-6 w-6 text-primary" />
+            </Button>
+          </div>
+          <Card className="bg-card p-6 rounded-xl shadow-md">
+            <div className="flex justify-center items-center h-40">
+              <p className="text-lg text-muted-foreground">Loading exam...</p>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentExam) {
+    return null;
+  }
 
   if (showResults && examResults) {
     return (
