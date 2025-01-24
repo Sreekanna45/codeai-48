@@ -52,6 +52,11 @@ export const SearchBar = ({ onSearchResult }: { onSearchResult: (info: LanguageI
     }
   };
 
+  const handleBack = () => {
+    setQuery('');
+    onSearchResult(null);
+  };
+
   return (
     <form onSubmit={handleSearch} className="relative w-full max-w-3xl mx-auto">
       <input

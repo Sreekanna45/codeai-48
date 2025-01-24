@@ -17,71 +17,74 @@ const Exam = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [currentExam, setCurrentExam] = useState<any>(null);
-  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
+  const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [examResults, setExamResults] = useState<ExamResults | null>(null);
 
   useEffect(() => {
     const examData = localStorage.getItem('currentExam');
     if (!examData) {
-      navigate('/');
+      navigate('/home');
       return;
     }
-    setCurrentExam(JSON.parse(examData));
+    const parsedExam = JSON.parse(examData);
+    setCurrentExam(parsedExam);
+    // Initialize selectedAnswers array with empty strings
+    setSelectedAnswers(new Array(parsedExam.questions.length).fill(''));
   }, [navigate]);
 
   if (!currentExam) return null;
 
   const currentQuestion = currentExam.questions[currentExam.currentQuestion];
 
-  const handleSubmitAnswer = () => {
-    if (!selectedAnswer) {
+  const handleAnswerSelect = (answer: string) => {
+    const newAnswers = [...selectedAnswers];
+    newAnswers[currentExam.currentQuestion] = answer;
+    setSelectedAnswers(newAnswers);
+  };
+
+  const handleQuestionChange = (index: number) => {
+    const updatedExam = {
+      ...currentExam,
+      currentQuestion: index,
+    };
+    setCurrentExam(updatedExam);
+    localStorage.setItem('currentExam', JSON.stringify(updatedExam));
+  };
+
+  const handleSubmitExam = () => {
+    // Check if all questions are answered
+    if (selectedAnswers.some(answer => answer === '')) {
       toast({
-        title: "Please select an answer",
+        title: "Please answer all questions",
         variant: "destructive",
       });
       return;
     }
 
-    const newAnswers = [...currentExam.answers, selectedAnswer];
-    const newCurrentQuestion = currentExam.currentQuestion + 1;
+    // Calculate score
+    const score = selectedAnswers.filter(
+      (answer, index) => answer === currentExam.questions[index].correctAnswer
+    ).length;
 
-    if (newCurrentQuestion >= currentExam.questions.length) {
-      // Calculate score and prepare results
-      const score = newAnswers.filter(
-        (answer: string, index: number) => answer === currentExam.questions[index].correctAnswer
-      ).length;
-
-      const results: ExamResults = {
-        score,
-        answers: newAnswers,
-        correctAnswers: currentExam.questions.map((q: any) => q.correctAnswer),
-        questions: currentExam.questions,
-      };
-
-      // Save result
-      saveExamResult({
-        language: currentExam.language,
-        score,
-        totalQuestions: currentExam.questions.length,
-        date: new Date().toISOString(),
-      });
-
-      setExamResults(results);
-      setShowResults(true);
-      localStorage.removeItem('currentExam');
-      return;
-    }
-
-    // Update exam state
-    const updatedExam = {
-      ...currentExam,
-      currentQuestion: newCurrentQuestion,
-      answers: newAnswers,
+    const results: ExamResults = {
+      score,
+      answers: selectedAnswers,
+      correctAnswers: currentExam.questions.map((q: any) => q.correctAnswer),
+      questions: currentExam.questions,
     };
-    localStorage.setItem('currentExam', JSON.stringify(updatedExam));
-    setCurrentExam(updatedExam);
-    setSelectedAnswer("");
+
+    // Save result
+    saveExamResult({
+      language: currentExam.language,
+      score,
+      totalQuestions: currentExam.questions.length,
+      date: new Date().toISOString(),
+    });
+
+    setExamResults(results);
+    setShowResults(true);
+    localStorage.removeItem('currentExam');
   };
 
   if (showResults && examResults) {
@@ -111,7 +114,7 @@ const Exam = () => {
               ))}
             </div>
             <div className="mt-6 flex gap-4">
-              <Button onClick={() => navigate('/')}>Back to Home</Button>
+              <Button onClick={() => navigate('/home')}>Back to Home</Button>
               <Button onClick={() => navigate('/results')}>View All Results</Button>
             </div>
           </Card>
@@ -132,13 +135,29 @@ const Exam = () => {
               Question {currentExam.currentQuestion + 1} of {currentExam.questions.length}
             </p>
           </div>
+          
+          {/* Question Navigation */}
+          <div className="mb-6 flex flex-wrap gap-2">
+            {currentExam.questions.map((_: any, index: number) => (
+              <Button
+                key={index}
+                variant={index === currentExam.currentQuestion ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleQuestionChange(index)}
+                className={selectedAnswers[index] ? "bg-secondary" : ""}
+              >
+                {index + 1}
+              </Button>
+            ))}
+          </div>
+
           <div className="space-y-6">
             <h2 className="text-lg font-medium text-foreground">
               {currentQuestion.question}
             </h2>
             <RadioGroup
-              value={selectedAnswer}
-              onValueChange={setSelectedAnswer}
+              value={selectedAnswers[currentExam.currentQuestion]}
+              onValueChange={handleAnswerSelect}
               className="space-y-3"
             >
               {currentQuestion.options.map((option: string, index: number) => (
@@ -153,14 +172,25 @@ const Exam = () => {
                 </div>
               ))}
             </RadioGroup>
-            <Button
-              className="w-full mt-6"
-              onClick={handleSubmitAnswer}
-            >
-              {currentExam.currentQuestion === currentExam.questions.length - 1
-                ? "Submit Exam"
-                : "Next Question"}
-            </Button>
+            <div className="flex justify-between mt-6">
+              <Button
+                variant="outline"
+                onClick={() => handleQuestionChange(Math.max(0, currentExam.currentQuestion - 1))}
+                disabled={currentExam.currentQuestion === 0}
+              >
+                Previous
+              </Button>
+              {currentExam.currentQuestion === currentExam.questions.length - 1 ? (
+                <Button onClick={handleSubmitExam}>Submit Exam</Button>
+              ) : (
+                <Button
+                  onClick={() => handleQuestionChange(currentExam.currentQuestion + 1)}
+                  disabled={currentExam.currentQuestion === currentExam.questions.length - 1}
+                >
+                  Next
+                </Button>
+              )}
+            </div>
           </div>
         </Card>
       </div>
