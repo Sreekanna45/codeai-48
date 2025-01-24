@@ -172,36 +172,85 @@ export interface ExamQuestion {
 }
 
 export const generateExamQuestions = (language: string): ExamQuestion[] => {
-  const questions: Record<string, ExamQuestion[]> = {
-    javascript: [
-      {
-        question: "What is JavaScript primarily used for?",
-        options: ["Web Development", "Operating Systems", "Mobile Apps", "Database Management"],
-        correctAnswer: "Web Development"
-      },
-      // Add more questions...
-    ],
-    // Add more languages...
-  };
+  const languageInfo = programmingLanguages[language.toLowerCase()];
+  if (!languageInfo) return [];
 
-  // Generate 10 different questions based on the language
-  const baseQuestions = [
-    `What is the main purpose of ${language}?`,
-    `Which year was ${language} created?`,
-    `Who created ${language}?`,
-    `What is a key advantage of ${language}?`,
-    `What is a major disadvantage of ${language}?`,
-    `Which data type is not supported in ${language}?`,
-    `What is the syntax for declaring a function in ${language}?`,
-    `What is the file extension for ${language} files?`,
-    `Which companies primarily use ${language}?`,
-    `What is the most common use case for ${language}?`
+  const questionTemplates = [
+    {
+      question: `What is the primary use case for ${languageInfo.name}?`,
+      options: [...languageInfo.uses, "None of the above"],
+      correctAnswer: languageInfo.uses[0]
+    },
+    {
+      question: `Who created ${languageInfo.name}?`,
+      options: [languageInfo.creator, "Bill Gates", "Linus Torvalds", "Tim Berners-Lee"],
+      correctAnswer: languageInfo.creator
+    },
+    {
+      question: `In which year was ${languageInfo.name} created?`,
+      options: [
+        languageInfo.year.toString(),
+        (languageInfo.year + 5).toString(),
+        (languageInfo.year - 3).toString(),
+        (languageInfo.year + 2).toString()
+      ],
+      correctAnswer: languageInfo.year.toString()
+    },
+    {
+      question: `What is a key advantage of ${languageInfo.name}?`,
+      options: [...languageInfo.advantages, "None of the above"],
+      correctAnswer: languageInfo.advantages[0]
+    },
+    {
+      question: `Which of these is a disadvantage of ${languageInfo.name}?`,
+      options: [...languageInfo.disadvantages, "No disadvantages"],
+      correctAnswer: languageInfo.disadvantages[0]
+    },
+    {
+      question: `What type of applications can be built with ${languageInfo.name}?`,
+      options: [...languageInfo.uses, "All of the above"],
+      correctAnswer: languageInfo.uses[0]
+    },
+    {
+      question: `Which of these is a correct syntax example in ${languageInfo.name}?`,
+      options: [...languageInfo.syntax, "None of the above"],
+      correctAnswer: languageInfo.syntax[0]
+    },
+    {
+      question: `What is ${languageInfo.name} primarily used for?`,
+      options: [languageInfo.description, "Gaming only", "Web only", "Mobile only"],
+      correctAnswer: languageInfo.description
+    },
+    {
+      question: `Which feature is NOT available in ${languageInfo.name}?`,
+      options: ["Time travel debugging", ...languageInfo.advantages],
+      correctAnswer: "Time travel debugging"
+    },
+    {
+      question: `What makes ${languageInfo.name} unique?`,
+      options: [
+        languageInfo.advantages[0],
+        "Nothing special",
+        "It's the oldest language",
+        "It's the newest language"
+      ],
+      correctAnswer: languageInfo.advantages[0]
+    }
   ];
 
-  return baseQuestions.map((q, index) => ({
-    question: q,
-    options: [`Option A for ${q}`, `Option B for ${q}`, `Option C for ${q}`, `Option D for ${q}`],
-    correctAnswer: `Option A for ${q}` // In a real app, this would be the actual correct answer
+  // Shuffle the questions and their options
+  const shuffleArray = <T>(array: T[]): T[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  return shuffleArray(questionTemplates).map(q => ({
+    ...q,
+    options: shuffleArray(q.options)
   }));
 };
 
