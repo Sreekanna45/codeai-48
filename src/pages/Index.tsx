@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchBar } from "@/components/SearchBar";
 import { TopLanguages } from "@/components/TopLanguages";
@@ -9,16 +9,35 @@ import type { LanguageInfo } from '@/data/programmingLanguages';
 const Index = () => {
   const [searchResult, setSearchResult] = useState<LanguageInfo | null>(null);
   const navigate = useNavigate();
+  const [greeting, setGreeting] = useState("");
+  const userName = localStorage.getItem("userName") || "User";
+
+  useEffect(() => {
+    // Check if user is logged in
+    const isLoggedIn = localStorage.getItem("userLoggedIn");
+    if (!isLoggedIn) {
+      navigate("/");
+      return;
+    }
+
+    // Set greeting based on time of day
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) {
+      setGreeting(`Good Morning, ${userName}`);
+    } else if (hour >= 12 && hour < 18) {
+      setGreeting(`Good Afternoon, ${userName}`);
+    } else {
+      setGreeting(`Good Evening, ${userName}`);
+    }
+  }, [navigate, userName]);
 
   return (
     <div className="min-h-screen bg-background p-6">
       <main className="container mx-auto space-y-8">
-        <header className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-white">code AI</h1>
-          <p className="text-lg text-muted-foreground">
-            Discover, learn, and code in your favorite programming languages
-          </p>
-        </header>
+        <div className="flex justify-between items-center mb-12">
+          <h2 className="text-xl font-semibold text-white">{greeting}</h2>
+          <h1 className="text-4xl font-bold text-white">code AI</h1>
+        </div>
 
         <SearchBar onSearchResult={setSearchResult} />
         
