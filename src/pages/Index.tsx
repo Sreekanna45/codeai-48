@@ -3,6 +3,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { TopLanguages } from '@/components/TopLanguages';
 import { CodeCompiler } from '@/components/CodeCompiler';
 import { ManualReview } from '@/components/ManualReview';
+import type { LanguageInfo } from '@/data/programmingLanguages';
 
 const Index = () => {
   const [searchResult, setSearchResult] = useState<LanguageInfo | null>(null);
