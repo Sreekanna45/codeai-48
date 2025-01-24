@@ -4,7 +4,8 @@ import { SearchBar } from "@/components/SearchBar";
 import { TopLanguages } from "@/components/TopLanguages";
 import { CodeCompiler } from "@/components/CodeCompiler";
 import { ManualReview } from "@/components/ManualReview";
-import { Menu, LogOut } from "lucide-react";
+import { Menu, LogOut, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,11 +45,25 @@ const Index = () => {
     navigate("/");
   };
 
+  const handleHomeClick = () => {
+    navigate("/home");
+  };
+
   return (
     <div className="min-h-screen bg-background p-6">
       <main className="container mx-auto space-y-8">
         <div className="flex justify-between items-center mb-12">
-          <h2 className="text-xl font-semibold text-white">{greeting}</h2>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleHomeClick}
+              className="hover:bg-secondary rounded-lg transition-colors"
+            >
+              <Home className="h-6 w-6 text-primary" />
+            </Button>
+            <h2 className="text-xl font-semibold text-white">{greeting}</h2>
+          </div>
           <div className="flex items-center gap-4">
             <h1 className="text-4xl font-bold text-white">code AI</h1>
             <DropdownMenu>
