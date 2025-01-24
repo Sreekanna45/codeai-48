@@ -1,5 +1,7 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 const TOP_LANGUAGES = [
   {
@@ -95,23 +97,39 @@ const TOP_LANGUAGES = [
 ];
 
 export const TopLanguages = () => {
+  const { toast } = useToast();
+
+  const handleTakeExam = (languageName: string) => {
+    toast({
+      title: "Exam Started",
+      description: `Starting ${languageName} examination. Good luck!`,
+    });
+    // In a real application, this would navigate to the exam page
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-8">
       {TOP_LANGUAGES.map((lang) => (
-        <Card key={lang.name} className="language-card">
+        <Card key={lang.name} className="language-card bg-card text-card-foreground hover:bg-secondary/50 transition-colors">
           <CardHeader>
-            <CardTitle>{lang.name}</CardTitle>
+            <CardTitle className="text-primary">{lang.name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600 mb-2">Created by {lang.creator} in {lang.year}</p>
-            <p className="mb-4">{lang.description}</p>
+            <p className="text-sm text-muted-foreground mb-2">Created by {lang.creator} in {lang.year}</p>
+            <p className="mb-4 text-foreground">{lang.description}</p>
             <div className="space-y-2">
-              <h4 className="font-semibold">Key Uses:</h4>
-              <ul className="list-disc list-inside text-sm">
+              <h4 className="font-semibold text-primary">Key Uses:</h4>
+              <ul className="list-disc list-inside text-sm text-foreground">
                 {lang.uses.slice(0, 3).map((use) => (
                   <li key={use}>{use}</li>
                 ))}
               </ul>
+              <Button 
+                className="w-full mt-4 bg-primary hover:bg-primary/80"
+                onClick={() => handleTakeExam(lang.name)}
+              >
+                Take Exam
+              </Button>
             </div>
           </CardContent>
         </Card>

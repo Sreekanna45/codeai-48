@@ -8,6 +8,7 @@ const SUPPORTED_LANGUAGES = [
   { id: 'python', name: 'Python' },
   { id: 'java', name: 'Java' },
   { id: 'cpp', name: 'C++' },
+  { id: 'c', name: 'C' },
   { id: 'ruby', name: 'Ruby' }
 ];
 
@@ -19,12 +20,10 @@ export const CodeCompiler = () => {
   const { toast } = useToast();
 
   const compileCode = async (code: string, language: string) => {
-    // This is a mock implementation. In a real app, this would call a compilation API
     const mockCompile = (code: string, language: string) => {
       switch (language) {
         case 'javascript':
           try {
-            // For demonstration, we're using eval. In production, use a proper sandbox
             const result = eval(code);
             return String(result);
           } catch (error) {
@@ -36,6 +35,8 @@ export const CodeCompiler = () => {
           return `Java Output:\nCompiled successfully\n${code.includes('System.out.println') ? code.split('System.out.println("')[1].split('")')[0] : 'No output'}`;
         case 'cpp':
           return `C++ Output:\nCompiled successfully\n${code.includes('cout') ? code.split('cout << "')[1].split('"')[0] : 'No output'}`;
+        case 'c':
+          return `C Output:\nCompiled successfully\n${code.includes('printf') ? code.split('printf("')[1].split('")')[0] : 'No output'}`;
         case 'ruby':
           return `Ruby Output:\n${code.includes('puts') ? code.replace('puts ', '') : 'No output'}`;
         default:

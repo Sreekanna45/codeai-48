@@ -4,47 +4,71 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
     
-    --primary: 210 100% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 98%;
     
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
     
-    --accent: 187 54% 47%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
     
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
     
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
 
     --radius: 0.5rem;
   }
 }
 
 .search-bar {
-  @apply w-full max-w-3xl px-4 py-3 text-lg rounded-lg border border-gray-200 
+  @apply w-full max-w-3xl px-4 py-3 text-lg rounded-lg border border-border
+         bg-background text-foreground
          focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all;
 }
 
 .language-card {
-  @apply bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all
-         border border-gray-100 cursor-pointer;
+  @apply bg-card text-card-foreground p-6 rounded-xl shadow-md 
+         hover:shadow-lg transition-all border border-border;
 }
 
 .compiler-section {
-  @apply bg-white rounded-xl shadow-md p-6 my-4;
+  @apply bg-card text-card-foreground rounded-xl shadow-md p-6 my-4 border border-border;
 }
 
 .code-editor {
-  @apply font-mono bg-gray-50 p-4 rounded-lg border border-gray-200;
+  @apply font-mono bg-secondary/50 text-foreground p-4 rounded-lg border border-border;
 }
 
 .output-window {
-  @apply bg-gray-50 p-4 rounded-lg mt-2 min-h-[100px] border border-gray-200;
+  @apply bg-secondary/50 text-foreground p-4 rounded-lg mt-2 min-h-[100px] border border-border;
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
 }
