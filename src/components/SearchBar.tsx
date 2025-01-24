@@ -9,9 +9,18 @@ export const SearchBar = ({ onSearchResult }: { onSearchResult: (info: LanguageI
   const [isLoading, setIsLoading] = useState(false);
 
   const searchLanguage = async (language: string): Promise<LanguageInfo | null> => {
-    // Make the search case-insensitive and trim whitespace
     const normalizedQuery = language.toLowerCase().trim();
-    return programmingLanguages[normalizedQuery] || null;
+    const result = programmingLanguages[normalizedQuery] || null;
+    
+    // Don't clear the exam section if no result is found
+    if (!result) {
+      toast({
+        title: "Language not found",
+        description: "Please try another programming language",
+        variant: "destructive",
+      });
+    }
+    return result;
   };
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -27,19 +36,12 @@ export const SearchBar = ({ onSearchResult }: { onSearchResult: (info: LanguageI
     setIsLoading(true);
     try {
       const result = await searchLanguage(query);
+      onSearchResult(result);
       if (result) {
-        onSearchResult(result);
         toast({
           title: "Information found!",
           description: `Showing details for ${result.name}`,
         });
-      } else {
-        toast({
-          title: "Language not found",
-          description: "Please try another programming language",
-          variant: "destructive",
-        });
-        onSearchResult(null);
       }
     } catch (error) {
       toast({
@@ -65,10 +67,10 @@ export const SearchBar = ({ onSearchResult }: { onSearchResult: (info: LanguageI
       <button
         type="submit"
         className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-md
-                 hover:bg-gray-100 transition-colors"
+                 hover:bg-secondary/50 transition-colors"
         disabled={isLoading}
       >
-        <Search className="w-5 h-5 text-gray-500" />
+        <Search className="w-5 h-5 text-muted-foreground" />
       </button>
     </form>
   );
