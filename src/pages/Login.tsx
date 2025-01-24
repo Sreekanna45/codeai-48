@@ -28,7 +28,6 @@ const Login = () => {
       return;
     }
 
-    // Store user info in localStorage
     localStorage.setItem("userName", name);
     localStorage.setItem("userLoggedIn", "true");
     
@@ -37,8 +36,13 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="w-full max-w-md space-y-8 p-8 bg-card rounded-xl border border-border">
+    <div 
+      className="min-h-screen bg-background flex items-center justify-center bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7')`,
+      }}
+    >
+      <div className="w-full max-w-md space-y-8 p-8 bg-card/80 backdrop-blur-sm rounded-xl border border-border">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white">Login</h2>
         </div>
@@ -53,7 +57,7 @@ const Login = () => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full text-white bg-secondary"
+              className="w-full text-white bg-secondary/50 backdrop-blur-sm"
               placeholder="Enter username"
               required
             />
@@ -68,7 +72,7 @@ const Login = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full text-white bg-secondary"
+              className="w-full text-white bg-secondary/50 backdrop-blur-sm"
               placeholder="Enter your name"
               required
             />
@@ -83,7 +87,7 @@ const Login = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full text-white bg-secondary"
+              className="w-full text-white bg-secondary/50 backdrop-blur-sm"
               placeholder="Enter password"
               required
             />

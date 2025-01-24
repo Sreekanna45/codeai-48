@@ -4,6 +4,13 @@ import { SearchBar } from "@/components/SearchBar";
 import { TopLanguages } from "@/components/TopLanguages";
 import { CodeCompiler } from "@/components/CodeCompiler";
 import { ManualReview } from "@/components/ManualReview";
+import { Menu, LogOut } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { LanguageInfo } from '@/data/programmingLanguages';
 
 const Index = () => {
@@ -31,12 +38,33 @@ const Index = () => {
     }
   }, [navigate, userName]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("userLoggedIn");
+    localStorage.removeItem("userName");
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen bg-background p-6">
       <main className="container mx-auto space-y-8">
         <div className="flex justify-between items-center mb-12">
           <h2 className="text-xl font-semibold text-white">{greeting}</h2>
-          <h1 className="text-4xl font-bold text-white">code AI</h1>
+          <div className="flex items-center gap-4">
+            <h1 className="text-4xl font-bold text-white">code AI</h1>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-2 hover:bg-secondary rounded-lg transition-colors">
+                  <Menu className="h-6 w-6 text-white" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
 
         <SearchBar onSearchResult={setSearchResult} />
