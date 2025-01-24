@@ -2,6 +2,8 @@ import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { generateExamQuestions, saveExamResult } from '../data/programmingLanguages';
+import { useNavigate } from 'react-router-dom';
 
 const TOP_LANGUAGES = [
   {
@@ -9,108 +11,100 @@ const TOP_LANGUAGES = [
     creator: "Brendan Eich",
     year: 1995,
     description: "Multi-paradigm language for web development",
-    uses: ["Web Development", "Server-side (Node.js)", "Mobile Apps", "Desktop Apps"],
-    advantages: ["Huge ecosystem", "Easy to learn", "Versatile", "Rich frameworks"],
-    disadvantages: ["Type coercion issues", "Floating-point precision", "Browser inconsistencies"]
+    uses: ["Web Development", "Server-side (Node.js)", "Mobile Apps"],
+    advantages: ["Huge ecosystem", "Easy to learn", "Versatile"],
+    disadvantages: ["Type coercion issues", "Browser inconsistencies"]
   },
   {
     name: "Python",
     creator: "Guido van Rossum",
     year: 1991,
     description: "High-level language focused on readability",
-    uses: ["Data Science", "AI/ML", "Web Backend", "Automation"],
+    uses: ["Data Science", "AI/ML", "Web Backend"],
     advantages: ["Easy syntax", "Large standard library", "Great for beginners"],
-    disadvantages: ["Slower execution", "GIL limitations", "Memory consumption"]
+    disadvantages: ["Slower execution", "GIL limitations"]
   },
   {
     name: "Java",
     creator: "James Gosling",
     year: 1995,
-    description: "Object-oriented language used for building platform-independent applications",
-    uses: ["Web Applications", "Mobile Applications (Android)", "Enterprise Applications"],
-    advantages: ["Platform independence", "Strong community support", "Robust security features"],
-    disadvantages: ["Verbose syntax", "Slower than native languages", "Memory consumption"]
+    description: "Object-oriented language for platform-independent applications",
+    uses: ["Enterprise Apps", "Android Development", "Web Applications"],
+    advantages: ["Platform independence", "Strong typing", "Large ecosystem"],
+    disadvantages: ["Verbose syntax", "Memory intensive"]
   },
   {
     name: "C++",
     creator: "Bjarne Stroustrup",
     year: 1985,
-    description: "General-purpose programming language with low-level memory manipulation",
+    description: "General-purpose language with low-level memory manipulation",
     uses: ["Game Development", "System Software", "Real-time systems"],
-    advantages: ["High performance", "Control over system resources", "Rich library support"],
-    disadvantages: ["Complex syntax", "Manual memory management", "Steeper learning curve"]
+    advantages: ["High performance", "Hardware access", "Large community"],
+    disadvantages: ["Complex syntax", "Manual memory management"]
   },
   {
-    name: "Ruby",
-    creator: "Yukihiro Matsumoto",
-    year: 1995,
-    description: "Dynamic, open-source programming language with a focus on simplicity",
-    uses: ["Web Development", "Data Processing", "Prototyping"],
-    advantages: ["Readable syntax", "Rich libraries", "Strong community"],
-    disadvantages: ["Performance issues", "Less control over memory", "Not as widely used as others"]
+    name: "C",
+    creator: "Dennis Ritchie",
+    year: 1972,
+    description: "Low-level programming language for system development",
+    uses: ["Operating Systems", "Embedded Systems", "System Software"],
+    advantages: ["High performance", "Direct hardware access", "Portable"],
+    disadvantages: ["Manual memory management", "No built-in OOP"]
   },
   {
-    name: "Go",
-    creator: "Robert Griesemer, Rob Pike, Ken Thompson",
-    year: 2009,
-    description: "Statically typed language designed for simplicity and efficiency",
-    uses: ["Cloud Services", "Web Servers", "Command-line Tools"],
-    advantages: ["Fast compilation", "Concurrency support", "Strong standard library"],
-    disadvantages: ["Limited generics", "Verbose error handling", "Less mature ecosystem"]
+    name: "HTML",
+    creator: "Tim Berners-Lee",
+    year: 1993,
+    description: "Standard markup language for web documents",
+    uses: ["Web Development", "Email Templates", "Documentation"],
+    advantages: ["Easy to learn", "Universal support", "SEO friendly"],
+    disadvantages: ["Static content only", "Browser inconsistencies"]
   },
   {
-    name: "Swift",
-    creator: "Apple Inc.",
-    year: 2014,
-    description: "Powerful and intuitive programming language for iOS and macOS development",
-    uses: ["iOS Applications", "macOS Applications", "Server-side Development"],
-    advantages: ["Safe and fast", "Modern syntax", "Strong community support"],
-    disadvantages: ["Limited cross-platform support", "Young language with evolving features", "Learning curve for Objective-C developers"]
-  },
-  {
-    name: "Kotlin",
-    creator: "JetBrains",
-    year: 2011,
-    description: "Modern programming language that runs on the Java Virtual Machine",
-    uses: ["Android Development", "Web Development", "Server-side Applications"],
-    advantages: ["Concise syntax", "Interoperable with Java", "Strong type system"],
-    disadvantages: ["Still evolving", "Limited resources compared to Java", "Performance overhead"]
-  },
-  {
-    name: "PHP",
-    creator: "Rasmus Lerdorf",
+    name: "CSS",
+    creator: "Håkon Wium Lie",
     year: 1994,
-    description: "Server-side scripting language designed for web development",
-    uses: ["Web Development", "Content Management Systems", "E-commerce"],
-    advantages: ["Easy to learn", "Wide adoption", "Strong community support"],
-    disadvantages: ["Inconsistent syntax", "Performance issues", "Security vulnerabilities"]
+    description: "Style sheet language for web document presentation",
+    uses: ["Web Styling", "Animations", "Responsive Design"],
+    advantages: ["Separation of concerns", "Reusable styles", "Maintainable"],
+    disadvantages: ["Browser inconsistencies", "Cascade complexity"]
   },
   {
-    name: "TypeScript",
-    creator: "Microsoft",
-    year: 2012,
-    description: "Superset of JavaScript that adds static types",
-    uses: ["Web Development", "Large-scale Applications", "Node.js Applications"],
-    advantages: ["Type safety", "Improved tooling", "Better code organization"],
-    disadvantages: ["Learning curve for JavaScript developers", "Compilation step required", "More verbose than JavaScript"]
-  },
+    name: "C#",
+    creator: "Anders Hejlsberg",
+    year: 2000,
+    description: "Modern object-oriented language by Microsoft",
+    uses: ["Windows Apps", "Game Development", "Enterprise Software"],
+    advantages: ["Modern features", "Strong typing", "Rich ecosystem"],
+    disadvantages: ["Learning curve", "Memory overhead"]
+  }
 ];
 
 export const TopLanguages = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleTakeExam = (languageName: string) => {
+    const questions = generateExamQuestions(languageName.toLowerCase());
+    localStorage.setItem('currentExam', JSON.stringify({
+      language: languageName,
+      questions,
+      currentQuestion: 0,
+      answers: []
+    }));
+    
     toast({
       title: "Exam Started",
       description: `Starting ${languageName} examination. Good luck!`,
     });
-    // In a real application, this would navigate to the exam page
+    
+    navigate('/exam');
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-8">
       {TOP_LANGUAGES.map((lang) => (
-        <Card key={lang.name} className="language-card bg-card text-card-foreground hover:bg-secondary/50 transition-colors">
+        <Card key={lang.name} className="language-card">
           <CardHeader>
             <CardTitle className="text-primary">{lang.name}</CardTitle>
           </CardHeader>
@@ -120,7 +114,7 @@ export const TopLanguages = () => {
             <div className="space-y-2">
               <h4 className="font-semibold text-primary">Key Uses:</h4>
               <ul className="list-disc list-inside text-sm text-foreground">
-                {lang.uses.slice(0, 3).map((use) => (
+                {lang.uses.map((use) => (
                   <li key={use}>{use}</li>
                 ))}
               </ul>

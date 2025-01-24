@@ -7,6 +7,7 @@ export interface LanguageInfo {
   advantages: string[];
   disadvantages: string[];
   examples: string[];
+  syntax: string[];
 }
 
 export const programmingLanguages: Record<string, LanguageInfo> = {
@@ -22,6 +23,11 @@ export const programmingLanguages: Record<string, LanguageInfo> = {
       "console.log('Hello, World!');",
       "const sum = (a, b) => a + b;",
       "fetch('https://api.example.com/data').then(response => response.json())"
+    ],
+    syntax: [
+      "let variable = value;",
+      "function name(params) { }",
+      "if (condition) { }"
     ]
   },
   python: {
@@ -35,7 +41,12 @@ export const programmingLanguages: Record<string, LanguageInfo> = {
     examples: [
       "print('Hello, World!')",
       "def add(a, b): return a + b",
-      "import pandas as pd\ndf = pd.read_csv('data.csv')"
+      "import pandas as pd"
+    ],
+    syntax: [
+      "variable = value",
+      "def function_name(parameters):",
+      "if condition:"
     ]
   },
   java: {
@@ -50,6 +61,11 @@ export const programmingLanguages: Record<string, LanguageInfo> = {
       "System.out.println('Hello, World!');",
       "public int add(int a, int b) { return a + b; }",
       "List<String> items = new ArrayList<>();"
+    ],
+    syntax: [
+      "public class ClassName { }",
+      "public void methodName() { }",
+      "if (condition) { }"
     ]
   },
   cpp: {
@@ -63,91 +79,150 @@ export const programmingLanguages: Record<string, LanguageInfo> = {
     examples: [
       "#include <iostream>\nint main() {\n    std::cout << 'Hello, World!';\n    return 0;\n}",
       "int add(int a, int b) { return a + b; }",
-      "std::vector<int> numbers = {1, 2, 3, 4, 5};"
+      "std::vector<int> numbers = {1, 2, 3};"
+    ],
+    syntax: [
+      "#include <header>",
+      "int functionName(parameters) { }",
+      "class ClassName { };"
     ]
   },
-  typescript: {
-    name: "TypeScript",
-    description: "A strict syntactical superset of JavaScript that adds optional static typing.",
-    creator: "Microsoft",
-    year: 2012,
-    uses: ["Web Development", "Large Scale Applications", "Node.js Development", "Enterprise Software"],
-    advantages: ["Type safety", "Better tooling", "JavaScript compatibility", "Modern features"],
-    disadvantages: ["Additional compilation step", "Learning curve", "Type complexity"],
+  c: {
+    name: "C",
+    description: "A general-purpose programming language that provides low-level memory access.",
+    creator: "Dennis Ritchie",
+    year: 1972,
+    uses: ["System Programming", "Embedded Systems", "Operating Systems", "Device Drivers"],
+    advantages: ["High performance", "Direct hardware access", "Portable", "Efficient"],
+    disadvantages: ["Manual memory management", "No built-in OOP", "Limited standard library"],
     examples: [
-      "console.log('Hello, World!');",
-      "function add(a: number, b: number): number { return a + b; }",
-      "interface User { name: string; age: number; }"
+      "#include <stdio.h>\nint main() {\n    printf('Hello, World!');\n    return 0;\n}",
+      "int add(int a, int b) { return a + b; }",
+      "struct Point { int x, y; };"
+    ],
+    syntax: [
+      "#include <header.h>",
+      "int function(parameters) { }",
+      "struct StructName { };"
     ]
   },
-  ruby: {
-    name: "Ruby",
-    description: "A dynamic, open-source programming language with a focus on simplicity and productivity.",
-    creator: "Yukihiro Matsumoto",
-    year: 1995,
-    uses: ["Web Development", "Scripting", "DevOps", "Data Processing"],
-    advantages: ["Elegant syntax", "Rich libraries", "Active community", "Developer happiness"],
-    disadvantages: ["Runtime speed", "Memory usage", "Threading model"],
+  html: {
+    name: "HTML",
+    description: "The standard markup language for documents designed to be displayed in a web browser.",
+    creator: "Tim Berners-Lee",
+    year: 1993,
+    uses: ["Web Development", "Email Templates", "Web Applications", "Documentation"],
+    advantages: ["Easy to learn", "Universal support", "SEO friendly", "Accessible"],
+    disadvantages: ["Static content only", "Browser inconsistencies", "No programming logic"],
     examples: [
-      "puts 'Hello, World!'",
-      "def add(a, b)\n  a + b\nend",
-      "users.map { |user| user.name.upcase }"
+      "<!DOCTYPE html>\n<html>\n<head>\n<title>Page Title</title>\n</head>\n<body>\n<h1>Hello World</h1>\n</body>\n</html>",
+      "<div class='container'>\n  <p>Content here</p>\n</div>",
+      "<form action='/submit'>\n  <input type='text'>\n</form>"
+    ],
+    syntax: [
+      "<tagname>content</tagname>",
+      "<element attribute='value'>",
+      "<!-- Comment -->"
     ]
   },
-  swift: {
-    name: "Swift",
-    description: "A powerful and intuitive programming language for iOS, macOS, and beyond.",
-    creator: "Apple Inc.",
-    year: 2014,
-    uses: ["iOS Development", "macOS Development", "Server-side Development", "Systems Programming"],
-    advantages: ["Safety", "Performance", "Modern syntax", "Apple ecosystem"],
-    disadvantages: ["Limited to Apple", "Young ecosystem", "Frequent updates"],
+  css: {
+    name: "CSS",
+    description: "A style sheet language used for describing the presentation of a document written in HTML.",
+    creator: "Håkon Wium Lie",
+    year: 1994,
+    uses: ["Web Styling", "Animations", "Responsive Design", "UI/UX Design"],
+    advantages: ["Separation of concerns", "Reusable styles", "Maintainable", "Powerful selectors"],
+    disadvantages: ["Browser inconsistencies", "Cascade complexity", "Specificity issues"],
     examples: [
-      "print('Hello, World!')",
-      "func add(_ a: Int, _ b: Int) -> Int { return a + b }",
-      "let numbers = [1, 2, 3].map { $0 * 2 }"
+      ".className {\n  color: blue;\n  margin: 20px;\n}",
+      "@media screen and (max-width: 600px) {\n  body {\n    font-size: 14px;\n  }\n}",
+      "#id {\n  display: flex;\n  justify-content: center;\n}"
+    ],
+    syntax: [
+      "selector { property: value; }",
+      "@media rule { }",
+      "@keyframes name { }"
     ]
   },
-  go: {
-    name: "Go",
-    description: "A statically typed, compiled programming language designed at Google.",
-    creator: "Robert Griesemer, Rob Pike, and Ken Thompson",
-    year: 2009,
-    uses: ["Cloud Services", "System Programming", "Web Services", "DevOps"],
-    advantages: ["Simplicity", "Strong standard library", "Built-in concurrency", "Fast compilation"],
-    disadvantages: ["Limited generics", "No exceptions", "Simple type system"],
+  csharp: {
+    name: "C#",
+    description: "A modern, object-oriented programming language developed by Microsoft.",
+    creator: "Anders Hejlsberg",
+    year: 2000,
+    uses: ["Windows Applications", "Game Development", "Enterprise Software", "Web Applications"],
+    advantages: ["Modern features", "Strong typing", "Rich ecosystem", "Cross-platform"],
+    disadvantages: ["Learning curve", "Memory overhead", "Compilation time"],
     examples: [
-      "fmt.Println('Hello, World!')",
-      "func add(a, b int) int { return a + b }",
-      "go func() { fmt.Println('Concurrent execution') }()"
-    ]
-  },
-  rust: {
-    name: "Rust",
-    description: "A systems programming language that runs blazingly fast, prevents segfaults, and guarantees thread safety.",
-    creator: "Graydon Hoare",
-    year: 2010,
-    uses: ["Systems Programming", "WebAssembly", "Network Services", "Embedded Systems"],
-    advantages: ["Memory safety", "Zero-cost abstractions", "Modern tooling", "Cross-platform"],
-    disadvantages: ["Steep learning curve", "Strict compiler", "Longer development time"],
-    examples: [
-      "fn main() {\n    println!('Hello, World!');\n}",
-      "fn add(a: i32, b: i32) -> i32 { a + b }",
-      "let numbers: Vec<i32> = vec![1, 2, 3];"
-    ]
-  },
-  kotlin: {
-    name: "Kotlin",
-    description: "A modern programming language that makes developers happier, designed for JVM and Android.",
-    creator: "JetBrains",
-    year: 2011,
-    uses: ["Android Development", "Server-side Development", "Cross-platform Mobile", "Web Development"],
-    advantages: ["Java interoperability", "Null safety", "Concise syntax", "Modern features"],
-    disadvantages: ["Compilation speed", "Learning curve for Java devs", "Smaller community"],
-    examples: [
-      "println('Hello, World!')",
-      "fun add(a: Int, b: Int) = a + b",
-      "data class User(val name: String, val age: Int)"
+      "Console.WriteLine('Hello, World!');",
+      "public int Add(int a, int b) => a + b;",
+      "var list = new List<string>();"
+    ],
+    syntax: [
+      "public class ClassName { }",
+      "public void MethodName() { }",
+      "using namespace;"
     ]
   }
+};
+
+export interface ExamQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+}
+
+export const generateExamQuestions = (language: string): ExamQuestion[] => {
+  const questions: Record<string, ExamQuestion[]> = {
+    javascript: [
+      {
+        question: "What is JavaScript primarily used for?",
+        options: ["Web Development", "Operating Systems", "Mobile Apps", "Database Management"],
+        correctAnswer: "Web Development"
+      },
+      // Add more questions...
+    ],
+    // Add more languages...
+  };
+
+  // Generate 10 different questions based on the language
+  const baseQuestions = [
+    `What is the main purpose of ${language}?`,
+    `Which year was ${language} created?`,
+    `Who created ${language}?`,
+    `What is a key advantage of ${language}?`,
+    `What is a major disadvantage of ${language}?`,
+    `Which data type is not supported in ${language}?`,
+    `What is the syntax for declaring a function in ${language}?`,
+    `What is the file extension for ${language} files?`,
+    `Which companies primarily use ${language}?`,
+    `What is the most common use case for ${language}?`
+  ];
+
+  return baseQuestions.map((q, index) => ({
+    question: q,
+    options: [`Option A for ${q}`, `Option B for ${q}`, `Option C for ${q}`, `Option D for ${q}`],
+    correctAnswer: `Option A for ${q}` // In a real app, this would be the actual correct answer
+  }));
+};
+
+export interface ExamResult {
+  language: string;
+  score: number;
+  totalQuestions: number;
+  date: string;
+}
+
+// Initialize exam results in localStorage if it doesn't exist
+if (typeof window !== 'undefined' && !localStorage.getItem('examResults')) {
+  localStorage.setItem('examResults', JSON.stringify([]));
+}
+
+export const saveExamResult = (result: ExamResult) => {
+  const results = JSON.parse(localStorage.getItem('examResults') || '[]');
+  results.push(result);
+  localStorage.setItem('examResults', JSON.stringify(results));
+};
+
+export const getExamResults = (): ExamResult[] => {
+  return JSON.parse(localStorage.getItem('examResults') || '[]');
 };
