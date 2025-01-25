@@ -17,15 +17,19 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
 
+      // Store login state and user info
+      localStorage.setItem("userLoggedIn", "true");
+      localStorage.setItem("userName", email.split('@')[0]); // Using email prefix as username
+
       toast.success("Login successful!");
-      navigate("/home");
+      navigate("/home"); // Redirect to home page
     } catch (error: any) {
       toast.error(error.message);
     } finally {
