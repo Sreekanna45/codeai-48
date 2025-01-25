@@ -12,8 +12,27 @@ const Login = () => {
   const [isResetMode, setIsResetMode] = useState(false);
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    if (!email || !password) {
+      toast.error("Please fill in all fields");
+      return false;
+    }
+    if (!email.includes("@")) {
+      toast.error("Please enter a valid email address");
+      return false;
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return false;
+    }
+    return true;
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) return;
+    
     setLoading(true);
 
     try {
@@ -22,16 +41,26 @@ const Login = () => {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message === "Invalid login credentials") {
+          toast.error("Invalid email or password. Please try again or sign up if you don't have an account.");
+        } else {
+          toast.error(error.message);
+        }
+        return;
+      }
 
-      // Store login state and user info
-      localStorage.setItem("userLoggedIn", "true");
-      localStorage.setItem("userName", email.split('@')[0]); // Using email prefix as username
+      if (data.user) {
+        // Store login state and user info
+        localStorage.setItem("userLoggedIn", "true");
+        localStorage.setItem("userName", email.split('@')[0]); // Using email prefix as username
 
-      toast.success("Login successful!");
-      navigate("/home"); // Redirect to home page
+        toast.success("Login successful!");
+        navigate("/home"); // Redirect to home page
+      }
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error("An unexpected error occurred. Please try again.");
+      console.error("Login error:", error);
     } finally {
       setLoading(false);
     }
@@ -39,6 +68,10 @@ const Login = () => {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email) {
+      toast.error("Please enter your email address");
+      return;
+    }
     setLoading(true);
 
     try {
