@@ -13,27 +13,45 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
+  const validateForm = () => {
+    if (!email || !username || !password || !confirmPassword) {
+      toast.error("All fields are required");
+      return false;
     }
 
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long");
-      return;
+    if (!email.includes("@")) {
+      toast.error("Please enter a valid email address");
+      return false;
     }
 
     if (username.length < 3) {
       toast.error("Username must be at least 3 characters long");
-      return;
+      return false;
     }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return false;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
 
     setLoading(true);
     
     try {
+      console.log("Starting signup process...");
+      
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -41,8 +59,11 @@ const SignUp = () => {
           data: {
             username,
           },
+          emailRedirectTo: window.location.origin + '/login',
         },
       });
+
+      console.log("Signup response:", { signUpData, signUpError });
 
       if (signUpError) throw signUpError;
 
@@ -57,13 +78,17 @@ const SignUp = () => {
             }
           ]);
 
-        if (profileError) throw profileError;
+        if (profileError) {
+          console.error("Profile creation error:", profileError);
+          throw profileError;
+        }
 
         toast.success("Sign up successful! Please check your email to verify your account.");
         navigate("/login");
       }
     } catch (error: any) {
-      toast.error(error.message);
+      console.error("Signup error:", error);
+      toast.error(error.message || "An error occurred during signup. Please try again.");
     } finally {
       setLoading(false);
     }
