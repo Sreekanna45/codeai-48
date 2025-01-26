@@ -9,6 +9,44 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      generated_questions: {
+        Row: {
+          answer: string
+          created_at: string
+          id: string
+          marks: number | null
+          question: string
+          question_type: string
+          study_material_id: string | null
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          id?: string
+          marks?: number | null
+          question: string
+          question_type: string
+          study_material_id?: string | null
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          id?: string
+          marks?: number | null
+          question?: string
+          question_type?: string
+          study_material_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_questions_study_material_id_fkey"
+            columns: ["study_material_id"]
+            isOneToOne: false
+            referencedRelation: "study_materials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -30,6 +68,30 @@ export type Database = {
           id?: string
           updated_at?: string
           username?: string
+        }
+        Relationships: []
+      }
+      study_materials: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_path: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_path: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
