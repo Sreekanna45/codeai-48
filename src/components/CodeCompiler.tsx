@@ -1,125 +1,151 @@
 import React, { useState } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import * as pdfjs from 'pdfjs-dist';
+import { Card } from './ui/card';
 
-const SUPPORTED_LANGUAGES = [
-  { id: 'javascript', name: 'JavaScript' },
-  { id: 'python', name: 'Python' },
-  { id: 'java', name: 'Java' },
-  { id: 'cpp', name: 'C++' },
-  { id: 'c', name: 'C' },
-  { id: 'ruby', name: 'Ruby' }
-];
+// Set worker path for PDF.js
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export const CodeCompiler = () => {
-  const [selectedLang, setSelectedLang] = useState(SUPPORTED_LANGUAGES[0].id);
-  const [code, setCode] = useState('');
-  const [output, setOutput] = useState('');
-  const [isCompiling, setIsCompiling] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [questions, setQuestions] = useState<Array<{ question: string; answer: string }>>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const compileCode = async (code: string, language: string) => {
-    const mockCompile = (code: string, language: string) => {
-      switch (language) {
-        case 'javascript':
-          try {
-            const result = eval(code);
-            return String(result);
-          } catch (error) {
-            throw new Error(`JavaScript Error: ${error}`);
-          }
-        case 'python':
-          return `Python Output:\n${code.includes('print') ? code.replace('print(', '').replace(')', '') : 'No output'}`;
-        case 'java':
-          return `Java Output:\nCompiled successfully\n${code.includes('System.out.println') ? code.split('System.out.println("')[1].split('")')[0] : 'No output'}`;
-        case 'cpp':
-          return `C++ Output:\nCompiled successfully\n${code.includes('cout') ? code.split('cout << "')[1].split('"')[0] : 'No output'}`;
-        case 'c':
-          return `C Output:\nCompiled successfully\n${code.includes('printf') ? code.split('printf("')[1].split('")')[0] : 'No output'}`;
-        case 'ruby':
-          return `Ruby Output:\n${code.includes('puts') ? code.replace('puts ', '') : 'No output'}`;
-        default:
-          return 'Language not supported';
-      }
-    };
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        try {
-          const result = mockCompile(code, language);
-          resolve(result);
-        } catch (error) {
-          resolve(`Error: ${error.message}`);
-        }
-      }, 1000);
-    });
+  const extractTextFromPDF = async (file: File): Promise<string> => {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+    let fullText = '';
+    
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map((item: any) => item.str).join(' ');
+      fullText += pageText + ' ';
+    }
+    
+    return fullText;
   };
 
-  const handleCompile = async () => {
-    if (!code.trim()) {
+  const generateQuestionsFromText = async (text: string) => {
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.VITE_OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4",
+          messages: [{
+            role: "system",
+            content: "You are a professional educator. Generate 10 important and relevant questions with accurate answers based on the provided text. Focus on key concepts and critical understanding. Format each question-answer pair clearly."
+          }, {
+            role: "user",
+            content: `Generate 10 important questions and their detailed answers from this text: ${text}`
+          }],
+          temperature: 0.7,
+          max_tokens: 2000
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate questions');
+      }
+
+      const data = await response.json();
+      const content = data.choices[0].message.content;
+      
+      // Parse the response into question-answer pairs
+      const pairs = content.split('\n\n').filter(Boolean).map((pair: string) => {
+        const [question, answer] = pair.split('\nAnswer: ');
+        return {
+          question: question.replace(/^\d+\.\s*/, '').trim(),
+          answer: answer?.trim() || ''
+        };
+      }).slice(0, 10); // Ensure we only get 10 pairs
+
+      return pairs;
+    } catch (error) {
+      console.error('Error generating questions:', error);
+      throw error;
+    }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFile = event.target.files?.[0];
+    if (!uploadedFile) return;
+
+    if (uploadedFile.type !== 'application/pdf') {
       toast({
-        title: "No code to compile",
-        description: "Please enter some code first",
-        variant: "destructive",
+        title: "Invalid file type",
+        description: "Please upload a PDF file",
+        variant: "destructive"
       });
       return;
     }
 
-    setIsCompiling(true);
-    setOutput('Compiling...');
-    
+    setFile(uploadedFile);
+    setIsLoading(true);
+
     try {
-      const result = await compileCode(code, selectedLang);
-      setOutput(String(result));
+      const text = await extractTextFromPDF(uploadedFile);
+      const generatedQuestions = await generateQuestionsFromText(text);
+      setQuestions(generatedQuestions);
+      
       toast({
-        title: "Code compiled successfully",
-        description: "Check the output below",
+        title: "Success",
+        description: "Questions generated successfully",
       });
     } catch (error) {
-      setOutput(`Error: ${error.message}`);
       toast({
-        title: "Compilation failed",
-        description: error.message,
-        variant: "destructive",
+        title: "Error",
+        description: "Failed to generate questions",
+        variant: "destructive"
       });
     } finally {
-      setIsCompiling(false);
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="compiler-section">
-      <div className="flex items-center gap-4 mb-4">
-        <Select value={selectedLang} onValueChange={setSelectedLang}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select language" />
-          </SelectTrigger>
-          <SelectContent>
-            {SUPPORTED_LANGUAGES.map((lang) => (
-              <SelectItem key={lang.id} value={lang.id}>
-                {lang.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Button onClick={handleCompile} disabled={isCompiling}>
-          {isCompiling ? 'Compiling...' : 'Run Code'}
-        </Button>
+      <div className="mb-4">
+        <input
+          type="file"
+          onChange={handleFileUpload}
+          accept=".pdf"
+          className="block w-full text-sm text-gray-500
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-full file:border-0
+            file:text-sm file:font-semibold
+            file:bg-primary file:text-white
+            hover:file:bg-primary/80"
+        />
       </div>
-      
-      <textarea
-        className="code-editor w-full h-[200px] mb-4"
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        placeholder="Write your code here..."
-        disabled={isCompiling}
-      />
-      
-      <div className="output-window">
-        <h3 className="text-sm font-semibold mb-2">Output:</h3>
-        <pre className="whitespace-pre-wrap">{output}</pre>
-      </div>
+
+      {isLoading && (
+        <div className="text-center py-4">
+          <p className="text-primary">Generating questions...</p>
+        </div>
+      )}
+
+      {questions.length > 0 && (
+        <div className="space-y-4 mt-6">
+          <h3 className="text-xl font-semibold text-primary">Generated Questions</h3>
+          {questions.map((qa, index) => (
+            <Card key={index} className="p-4 space-y-2">
+              <p className="font-medium text-foreground">
+                {index + 1}. {qa.question}
+              </p>
+              <p className="text-muted-foreground">
+                <span className="font-medium">Answer:</span> {qa.answer}
+              </p>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
