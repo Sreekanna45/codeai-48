@@ -92,6 +92,7 @@ export const programmingNotes: LanguageNote[] = [
   },
   {
     language: "Java",
+    overview: `Java, developed by Sun Microsystems and released in 1995, is a class-based, object-oriented programming language designed to have as few implementation dependencies as possible. Its "Write Once, Run Anywhere" (WORA) principle allows Java applications to run on any platform that supports Java without recompilation. Java's architecture-neutral and portable nature comes from its compilation to bytecode, which runs on a Java Virtual Machine (JVM). The language's strong type system, automatic memory management through garbage collection, and extensive security features make it popular for enterprise-level applications. Java's ecosystem includes a vast standard library and numerous frameworks for web, mobile, and enterprise development. The language's emphasis on backward compatibility ensures that older applications continue to work with newer Java versions. Java's influence on modern programming is significant, with many languages adopting its syntax style and object-oriented principles. The platform's maturity, stability, and extensive tooling support make it a preferred choice for large-scale applications, Android development, and server-side programming.`,
     basicSyntax: "Static typing, class-based, public/private modifiers",
     keyFeatures: [
       "Platform independence",
@@ -131,6 +132,7 @@ export const programmingNotes: LanguageNote[] = [
   },
   {
     language: "C++",
+    overview: `C++, created by Bjarne Stroustrup as an extension of C, is a powerful systems programming language that combines low-level memory manipulation with high-level object-oriented features. Released in 1985, it has evolved to become one of the most influential programming languages, particularly in systems programming, game development, and performance-critical applications. C++ provides direct access to hardware and memory management while supporting multiple programming paradigms including procedural, object-oriented, and generic programming. The language's template system enables sophisticated meta-programming capabilities, while its Standard Template Library (STL) provides a rich collection of containers and algorithms. C++'s principle of "zero-overhead abstraction" ensures that programmers don't pay for features they don't use, making it ideal for performance-critical applications. Modern C++ (C++11 and beyond) has introduced numerous features like smart pointers, lambda expressions, and move semantics, improving both safety and efficiency.`,
     basicSyntax: "Statically typed, class-based, pointer manipulation",
     keyFeatures: [
       "Low-level memory manipulation",
@@ -170,6 +172,7 @@ export const programmingNotes: LanguageNote[] = [
   },
   {
     language: "Ruby",
+    overview: `Ruby, created by Yukihiro Matsumoto in 1995, is a dynamic, object-oriented programming language designed with programmer happiness in mind. Its elegant syntax and powerful metaprogramming capabilities make it particularly suitable for creating domain-specific languages (DSLs) and web applications. Ruby follows the principle of "least surprise," aiming to minimize confusion by making code behave in a natural, consistent way. The language's pure object-oriented nature means everything is an object, including numbers and nil, providing a consistent programming model. Ruby's blocks and Procs offer powerful functional programming capabilities, while its mixins provide an alternative to multiple inheritance. The Ruby on Rails framework revolutionized web development by introducing convention over configuration and don't repeat yourself (DRY) principles. Ruby's extensive standard library, package manager (RubyGems), and active community contribute to its popularity in web development and automation tasks.`,
     basicSyntax: "Dynamic typing, everything is an object, def for methods",
     keyFeatures: [
       "Pure object-oriented",
@@ -209,6 +212,7 @@ export const programmingNotes: LanguageNote[] = [
   },
   {
     language: "Go",
+    overview: `Go, developed at Google and released in 2009, is a statically typed, compiled programming language designed for simplicity, efficiency, and ease of concurrent programming. Created by Robert Griesemer, Rob Pike, and Ken Thompson, Go addresses the challenges of modern software development at scale. The language's built-in concurrency support through goroutines and channels makes it excellent for networked services and microservices architectures. Go's simplicity is reflected in its clean syntax, fast compilation times, and comprehensive standard library. The language's garbage collection and memory safety features help prevent common programming errors while maintaining high performance. Go's approach to dependency management and build system makes it particularly suitable for large-scale software projects. The language's focus on simplicity extends to its minimal feature set, deliberately omitting features like inheritance and generics (until Go 1.18) to maintain code clarity and readability.`,
     basicSyntax: "Static typing, func for functions, implicit interfaces",
     keyFeatures: [
       "Goroutines",
@@ -248,6 +252,7 @@ export const programmingNotes: LanguageNote[] = [
   },
   {
     language: "Rust",
+    overview: `Rust, initially developed by Mozilla Research, is a systems programming language that guarantees memory safety, thread safety, and zero-cost abstractions. Released in 2015, Rust combines low-level control with high-level ergonomics, making it suitable for everything from operating systems to WebAssembly applications. The language's unique ownership system and borrowing rules prevent common programming errors at compile time, eliminating entire classes of bugs like null pointer dereferences and data races. Rust's powerful type system and pattern matching capabilities enable expressive, safe code without runtime overhead. The language's cargo package manager and build system provide excellent dependency management and build tooling. Rust's commitment to zero-cost abstractions means that high-level programming constructs compile to efficient machine code, making it an excellent choice for performance-critical applications.`,
     basicSyntax: "Static typing, ownership system, fn for functions",
     keyFeatures: [
       "Ownership system",
@@ -287,6 +292,7 @@ export const programmingNotes: LanguageNote[] = [
   },
   {
     language: "Swift",
+    overview: `Swift, developed by Apple and released in 2014, is a modern programming language designed for safety, performance, and software design patterns. Created as a replacement for Apple's previous programming language Objective-C, Swift combines powerful type inference capabilities with a clean, expressive syntax. The language's emphasis on safety is evident in its handling of optionals, which forces explicit handling of nil values, preventing many common programming errors. Swift's protocol-oriented programming paradigm offers a flexible alternative to traditional object-oriented programming, enabling code reuse through protocol extensions. The language's automatic memory management through ARC (Automatic Reference Counting) provides deterministic performance without the overhead of garbage collection. Swift's interoperability with Objective-C allows developers to gradually migrate existing codebases while taking advantage of modern language features.`,
     basicSyntax: "Static typing, optionals, func for functions",
     keyFeatures: [
       "Type inference",
@@ -326,6 +332,7 @@ export const programmingNotes: LanguageNote[] = [
   },
   {
     language: "Kotlin",
+    overview: `Kotlin, developed by JetBrains and released in 2011, is a modern programming language that runs on the Java Virtual Machine (JVM) and can be compiled to JavaScript or native code. Designed to be fully interoperable with Java, Kotlin addresses many of Java's pain points while adding modern features. The language's null safety system helps prevent null pointer exceptions through compile-time checks, while its smart casts reduce boilerplate code. Kotlin's coroutines provide a simplified approach to asynchronous programming, making it easier to write concurrent code. The language's support for both object-oriented and functional programming paradigms offers flexibility in coding style. Kotlin's adoption as the preferred language for Android development by Google has significantly increased its popularity. The language's emphasis on pragmatism and interoperability makes it an excellent choice for both new projects and gradual migration of existing Java codebases.`,
     basicSyntax: "Static typing, null safety, fun for functions",
     keyFeatures: [
       "Null safety",
@@ -365,6 +372,7 @@ export const programmingNotes: LanguageNote[] = [
   },
   {
     language: "TypeScript",
+    overview: `TypeScript, developed by Microsoft and released in 2012, is a typed superset of JavaScript that compiles to plain JavaScript. The language adds optional static types, classes, and modules to JavaScript, enabling developers to write more maintainable and scalable applications. TypeScript's type system is one of its key features, providing better tooling support, earlier error detection, and improved code documentation. The language's structural type system allows for flexible typing while maintaining type safety. TypeScript's ability to use existing JavaScript code and type definitions from DefinitelyTyped makes it easy to gradually adopt in existing projects. The language's support for modern ECMAScript features, combined with its own innovations like decorators and enum support, makes it particularly suitable for large-scale JavaScript projects. TypeScript's integration with popular IDEs provides excellent development features like intelligent code completion and refactoring support.`,
     basicSyntax: "Static typing on top of JavaScript, interfaces, generics",
     keyFeatures: [
       "Static typing",
