@@ -4,7 +4,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { TopLanguages } from "@/components/TopLanguages";
 import { CodeCompiler } from "@/components/CodeCompiler";
 import { ManualReview } from "@/components/ManualReview";
-import { Menu, LogOut, Home } from "lucide-react";
+import { Menu, LogOut, Home, Book } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,13 +12,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import type { LanguageInfo } from '@/data/programmingLanguages';
+import { programmingNotes } from '@/data/languageNotes';
 
 const Index = () => {
   const [searchResult, setSearchResult] = useState<LanguageInfo | null>(null);
   const navigate = useNavigate();
   const [greeting, setGreeting] = useState("");
   const userName = localStorage.getItem("userName") || "User";
+  const [showNotes, setShowNotes] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -49,6 +57,10 @@ const Index = () => {
     setSearchResult(null);
   };
 
+  const toggleNotes = () => {
+    setShowNotes(!showNotes);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-black p-6">
       <main className="container mx-auto space-y-8">
@@ -65,6 +77,14 @@ const Index = () => {
             <h2 className="text-xl font-semibold text-white">{greeting}</h2>
           </div>
           <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleNotes}
+              className="hover:bg-secondary rounded-lg transition-colors"
+            >
+              <Book className="h-6 w-6 text-primary" />
+            </Button>
             <h1 className="text-4xl font-bold text-white">code AI</h1>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -84,6 +104,72 @@ const Index = () => {
 
         <SearchBar onSearchResult={setSearchResult} />
         
+        {showNotes && (
+          <section className="bg-card p-6 rounded-xl shadow-md">
+            <h2 className="text-2xl font-semibold mb-6 text-primary">Programming Language Notes</h2>
+            <Accordion type="single" collapsible className="space-y-2">
+              {programmingNotes.map((note, index) => (
+                <AccordionItem key={index} value={`note-${index}`} className="bg-secondary/20 rounded-lg">
+                  <AccordionTrigger className="px-4 py-2 hover:bg-secondary/30 rounded-t-lg">
+                    {note.language}
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 py-2 space-y-4">
+                    <div>
+                      <h4 className="font-semibold text-primary">Basic Syntax</h4>
+                      <p className="text-muted-foreground">{note.basicSyntax}</p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-primary">Key Features</h4>
+                      <ul className="list-disc list-inside text-muted-foreground">
+                        {note.keyFeatures.map((feature, i) => (
+                          <li key={i}>{feature}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-primary">Best Practices</h4>
+                      <ul className="list-disc list-inside text-muted-foreground">
+                        {note.bestPractices.map((practice, i) => (
+                          <li key={i}>{practice}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-primary">Common Pitfalls</h4>
+                      <ul className="list-disc list-inside text-muted-foreground">
+                        {note.commonPitfalls.map((pitfall, i) => (
+                          <li key={i}>{pitfall}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-primary">Popular Frameworks</h4>
+                      <ul className="list-disc list-inside text-muted-foreground">
+                        {note.frameworks.map((framework, i) => (
+                          <li key={i}>{framework}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-primary">Learning Resources</h4>
+                      <ul className="list-disc list-inside text-muted-foreground">
+                        {note.resources.map((resource, i) => (
+                          <li key={i}>{resource}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </section>
+        )}
+
         {searchResult ? (
           <>
             <section className="bg-card p-6 rounded-xl shadow-md">
@@ -150,21 +236,23 @@ const Index = () => {
             </div>
           </>
         ) : (
-          <section>
-            <h2 className="text-2xl font-semibold mb-6 text-primary">Top Programming Languages</h2>
-            <TopLanguages />
-          </section>
+          <>
+            <section>
+              <h2 className="text-2xl font-semibold mb-6 text-primary">Top Programming Languages</h2>
+              <TopLanguages />
+            </section>
+            
+            <section>
+              <h2 className="text-2xl font-semibold mb-6 text-primary">Code Compiler</h2>
+              <CodeCompiler />
+            </section>
+            
+            <section>
+              <h2 className="text-2xl font-semibold mb-6 text-primary">Manual Review</h2>
+              <ManualReview />
+            </section>
+          </>
         )}
-        
-        <section>
-          <h2 className="text-2xl font-semibold mb-6 text-primary">Code Compiler</h2>
-          <CodeCompiler />
-        </section>
-        
-        <section>
-          <h2 className="text-2xl font-semibold mb-6 text-primary">Manual Review</h2>
-          <ManualReview />
-        </section>
       </main>
     </div>
   );
