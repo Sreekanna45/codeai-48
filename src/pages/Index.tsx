@@ -50,7 +50,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-black p-6">
       <main className="container mx-auto space-y-8">
         <div className="flex justify-between items-center mb-12">
           <div className="flex items-center gap-4">
