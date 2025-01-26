@@ -8,6 +8,8 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Exam from "./pages/Exam";
 import Results from "./pages/Results";
+import FileAnalysis from "./pages/FileAnalysis";
+import CodeCompilerPage from "./pages/CodeCompilerPage";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +25,8 @@ const App = () => (
           <Route path="/home" element={<Index />} />
           <Route path="/exam" element={<Exam />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/file-analysis" element={<FileAnalysis />} />
+          <Route path="/code-compiler" element={<CodeCompilerPage />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

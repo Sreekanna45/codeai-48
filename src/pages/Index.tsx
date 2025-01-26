@@ -4,7 +4,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { TopLanguages } from "@/components/TopLanguages";
 import { CodeCompiler } from "@/components/CodeCompiler";
 import { ManualReview } from "@/components/ManualReview";
-import { Menu, LogOut, Home } from "lucide-react";
+import { Menu, LogOut, Home, FileText, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -80,6 +80,23 @@ const Index = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Button
+            onClick={() => navigate('/file-analysis')}
+            className="h-32 text-lg font-semibold bg-secondary hover:bg-secondary/80"
+          >
+            <FileText className="mr-2 h-6 w-6" />
+            File Analysis
+          </Button>
+          <Button
+            onClick={() => navigate('/code-compiler')}
+            className="h-32 text-lg font-semibold bg-secondary hover:bg-secondary/80"
+          >
+            <Code className="mr-2 h-6 w-6" />
+            Code Compiler
+          </Button>
         </div>
 
         <SearchBar onSearchResult={setSearchResult} />
