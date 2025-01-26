@@ -72,3 +72,8 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Add styles for notes section tabs */
+[data-state="active"].notes-tab {
+  @apply bg-white text-black;
+}

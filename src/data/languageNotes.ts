@@ -1,5 +1,6 @@
 export interface LanguageNote {
   language: string;
+  overview: string;
   basicSyntax: string;
   keyFeatures: string[];
   bestPractices: string[];
@@ -11,6 +12,7 @@ export interface LanguageNote {
 export const programmingNotes: LanguageNote[] = [
   {
     language: "JavaScript",
+    overview: `JavaScript is a versatile, high-level programming language that has become the backbone of modern web development. Originally created by Brendan Eich in 1995 for Netscape, it has evolved from a simple scripting language for web browsers into a powerful tool for both front-end and back-end development. Its event-driven, functional, and object-oriented programming paradigms make it uniquely suited for building interactive web applications. The language's asynchronous programming capabilities, particularly through Promises and async/await syntax, have revolutionized how developers handle operations like API calls and file operations. JavaScript's ecosystem is one of the largest in the programming world, with npm (Node Package Manager) hosting millions of packages and libraries. The language's ability to run both in browsers and on servers through Node.js has led to the rise of full-stack JavaScript development. Modern JavaScript (ES6+) has introduced numerous features like arrow functions, destructuring, modules, and classes, making the code more readable and maintainable. The language's dynamic typing and prototype-based object-oriented nature provide flexibility but require careful attention to avoid common pitfalls. With the advent of frameworks like React, Vue, and Angular, JavaScript has become essential for building sophisticated single-page applications and progressive web apps.`,
     basicSyntax: "let/const for variables, function/=> for functions, {} for blocks",
     keyFeatures: [
       "First-class functions",
@@ -50,6 +52,7 @@ export const programmingNotes: LanguageNote[] = [
   },
   {
     language: "Python",
+    overview: `Python, created by Guido van Rossum and first released in 1991, has emerged as one of the most popular programming languages worldwide. Its philosophy emphasizes code readability with its notable use of significant whitespace and clean syntax. Python's versatility spans web development, data science, artificial intelligence, machine learning, automation, and scientific computing. The language's "batteries included" standard library, combined with its vast ecosystem of third-party packages, makes it suitable for virtually any programming task. Python's simplicity and readability make it an excellent choice for beginners, while its powerful features satisfy advanced developers. The language's dynamic typing and automatic memory management allow developers to focus on problem-solving rather than low-level details. Python's support for multiple programming paradigms, including procedural, object-oriented, and functional programming, provides flexibility in coding approaches. The rise of data science and machine learning has further cemented Python's position, with libraries like NumPy, Pandas, and TensorFlow becoming industry standards. Python's interpreter-based nature, while sometimes affecting performance, offers immediate feedback and easier debugging. The language's strong community support and comprehensive documentation make learning and problem-solving more accessible.`,
     basicSyntax: "Indentation-based blocks, def for functions, class for classes",
     keyFeatures: [
       "Simple, readable syntax",

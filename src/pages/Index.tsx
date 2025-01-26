@@ -115,10 +115,13 @@ const Index = () => {
                   </AccordionTrigger>
                   <AccordionContent className="px-4 py-2 space-y-4">
                     <div>
+                      <h4 className="font-semibold text-primary">Overview</h4>
+                      <p className="text-muted-foreground whitespace-pre-line">{note.overview}</p>
+                    </div>
+                    <div>
                       <h4 className="font-semibold text-primary">Basic Syntax</h4>
                       <p className="text-muted-foreground">{note.basicSyntax}</p>
                     </div>
-                    
                     <div>
                       <h4 className="font-semibold text-primary">Key Features</h4>
                       <ul className="list-disc list-inside text-muted-foreground">
@@ -127,7 +130,6 @@ const Index = () => {
                         ))}
                       </ul>
                     </div>
-                    
                     <div>
                       <h4 className="font-semibold text-primary">Best Practices</h4>
                       <ul className="list-disc list-inside text-muted-foreground">
@@ -136,7 +138,6 @@ const Index = () => {
                         ))}
                       </ul>
                     </div>
-                    
                     <div>
                       <h4 className="font-semibold text-primary">Common Pitfalls</h4>
                       <ul className="list-disc list-inside text-muted-foreground">
@@ -145,7 +146,6 @@ const Index = () => {
                         ))}
                       </ul>
                     </div>
-                    
                     <div>
                       <h4 className="font-semibold text-primary">Popular Frameworks</h4>
                       <ul className="list-disc list-inside text-muted-foreground">
@@ -154,7 +154,6 @@ const Index = () => {
                         ))}
                       </ul>
                     </div>
-                    
                     <div>
                       <h4 className="font-semibold text-primary">Learning Resources</h4>
                       <ul className="list-disc list-inside text-muted-foreground">
