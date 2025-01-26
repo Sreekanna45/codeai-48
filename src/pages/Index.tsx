@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchBar } from "@/components/SearchBar";
 import { TopLanguages } from "@/components/TopLanguages";
+import { CodeCompiler } from "@/components/CodeCompiler";
 import { ManualReview } from "@/components/ManualReview";
-import { Menu, LogOut, Home, FileText, Code } from "lucide-react";
+import { Menu, LogOut, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -45,11 +46,11 @@ const Index = () => {
   };
 
   const handleHomeClick = () => {
-    setSearchResult(null);
+    navigate("/home");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-black p-6">
+    <div className="min-h-screen bg-background p-6">
       <main className="container mx-auto space-y-8">
         <div className="flex justify-between items-center mb-12">
           <div className="flex items-center gap-4">
@@ -81,96 +82,72 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Button
-            onClick={() => navigate('/file-analysis')}
-            className="h-32 text-lg font-semibold bg-secondary hover:bg-secondary/80"
-          >
-            <FileText className="mr-2 h-6 w-6" />
-            File Analysis
-          </Button>
-          <Button
-            onClick={() => navigate('/code-compiler')}
-            className="h-32 text-lg font-semibold bg-secondary hover:bg-secondary/80"
-          >
-            <Code className="mr-2 h-6 w-6" />
-            Code Compiler
-          </Button>
-        </div>
-
         <SearchBar onSearchResult={setSearchResult} />
         
         {searchResult ? (
-          <>
-            <section className="bg-card p-6 rounded-xl shadow-md">
-              <h2 className="text-2xl font-semibold mb-4 text-primary">{searchResult.name}</h2>
-              <div className="space-y-4">
-                <p className="text-muted-foreground">{searchResult.description}</p>
-                <p><strong>Created by:</strong> {searchResult.creator} in {searchResult.year}</p>
-                
-                <div>
-                  <h3 className="font-semibold mb-2 text-primary">Key Uses:</h3>
-                  <ul className="list-disc list-inside text-foreground">
-                    {searchResult.uses.map((use, index) => (
-                      <li key={index}>{use}</li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div>
-                  <h3 className="font-semibold mb-2 text-primary">Advantages:</h3>
-                  <ul className="list-disc list-inside text-foreground">
-                    {searchResult.advantages.map((adv, index) => (
-                      <li key={index}>{adv}</li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div>
-                  <h3 className="font-semibold mb-2 text-primary">Disadvantages:</h3>
-                  <ul className="list-disc list-inside text-foreground">
-                    {searchResult.disadvantages.map((dis, index) => (
-                      <li key={index}>{dis}</li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div>
-                  <h3 className="font-semibold mb-2 text-primary">Example Code:</h3>
-                  <div className="space-y-2">
-                    {searchResult.examples.map((example, index) => (
-                      <pre key={index} className="bg-secondary/50 p-2 rounded text-foreground">{example}</pre>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2 text-primary">Syntax Examples:</h3>
-                  <div className="space-y-2">
-                    {searchResult.syntax.map((syntax, index) => (
-                      <pre key={index} className="bg-secondary/50 p-2 rounded text-foreground">{syntax}</pre>
-                    ))}
-                  </div>
+          <section className="bg-card p-6 rounded-xl shadow-md">
+            <h2 className="text-2xl font-semibold mb-4 text-primary">{searchResult.name}</h2>
+            <div className="space-y-4">
+              <p className="text-muted-foreground">{searchResult.description}</p>
+              <p><strong>Created by:</strong> {searchResult.creator} in {searchResult.year}</p>
+              
+              <div>
+                <h3 className="font-semibold mb-2 text-primary">Key Uses:</h3>
+                <ul className="list-disc list-inside text-foreground">
+                  {searchResult.uses.map((use, index) => (
+                    <li key={index}>{use}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold mb-2 text-primary">Advantages:</h3>
+                <ul className="list-disc list-inside text-foreground">
+                  {searchResult.advantages.map((adv, index) => (
+                    <li key={index}>{adv}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold mb-2 text-primary">Disadvantages:</h3>
+                <ul className="list-disc list-inside text-foreground">
+                  {searchResult.disadvantages.map((dis, index) => (
+                    <li key={index}>{dis}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold mb-2 text-primary">Example Code:</h3>
+                <div className="space-y-2">
+                  {searchResult.examples.map((example, index) => (
+                    <pre key={index} className="bg-secondary/50 p-2 rounded text-foreground">{example}</pre>
+                  ))}
                 </div>
               </div>
-            </section>
-            <div className="flex justify-center mt-6">
-              <Button
-                onClick={handleHomeClick}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Home className="w-5 h-5" />
-                Back to Home
-              </Button>
+
+              <div>
+                <h3 className="font-semibold mb-2 text-primary">Syntax Examples:</h3>
+                <div className="space-y-2">
+                  {searchResult.syntax.map((syntax, index) => (
+                    <pre key={index} className="bg-secondary/50 p-2 rounded text-foreground">{syntax}</pre>
+                  ))}
+                </div>
+              </div>
             </div>
-          </>
+          </section>
         ) : (
           <section>
             <h2 className="text-2xl font-semibold mb-6 text-primary">Top Programming Languages</h2>
             <TopLanguages />
           </section>
         )}
+        
+        <section>
+          <h2 className="text-2xl font-semibold mb-6 text-primary">Code Compiler</h2>
+          <CodeCompiler />
+        </section>
         
         <section>
           <h2 className="text-2xl font-semibold mb-6 text-primary">Manual Review</h2>
