@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Code } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { CodeCompiler } from "@/components/CodeCompiler";
 
 const CodeCompilerPage = () => {
   const navigate = useNavigate();
@@ -23,8 +24,8 @@ const CodeCompilerPage = () => {
           <p className="text-muted-foreground mt-2">Write, compile, and run your code</p>
         </div>
 
-        <div className="max-w-4xl mx-auto bg-card rounded-lg p-6">
-          <p className="text-center text-muted-foreground">Code compiler feature coming soon...</p>
+        <div className="max-w-4xl mx-auto">
+          <CodeCompiler />
         </div>
       </div>
     </div>

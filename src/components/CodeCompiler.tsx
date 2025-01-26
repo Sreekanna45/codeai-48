@@ -30,7 +30,7 @@ export const CodeCompiler = () => {
     if (!apiKey) {
       toast({
         title: "API Key Required",
-        description: "Please set your Judge0 API key in the settings",
+        description: "Please set your Judge0 API key in the settings above to compile code",
         variant: "destructive"
       });
       return;
@@ -66,10 +66,10 @@ export const CodeCompiler = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to compile code",
+        description: "Failed to compile code. Please check your API key and try again.",
         variant: "destructive"
       });
-      setOutput('Error: Failed to compile code');
+      setOutput('Error: Failed to compile code. Please ensure your API key is valid.');
     } finally {
       setIsLoading(false);
     }
@@ -77,9 +77,21 @@ export const CodeCompiler = () => {
 
   return (
     <div className="space-y-8">
-      <ApiKeySettings />
+      <div className="bg-card p-6 rounded-lg shadow-md">
+        <h3 className="text-lg font-semibold mb-4">API Settings</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          To use the code compiler, you need to set up your Judge0 API key. You can get one from 
+          <a href="https://rapidapi.com/judge0-official/api/judge0-ce" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             className="text-primary hover:underline ml-1">
+            RapidAPI (Judge0)
+          </a>
+        </p>
+        <ApiKeySettings />
+      </div>
       
-      <div className="compiler-section">
+      <div className="compiler-section bg-card p-6 rounded-lg shadow-md">
         <h3 className="text-xl font-semibold mb-4 text-primary">Code Compiler</h3>
         <div className="space-y-4">
           <LanguageSelector
