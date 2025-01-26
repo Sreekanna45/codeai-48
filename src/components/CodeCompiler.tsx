@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { LanguageSelector } from './compiler/LanguageSelector';
 import { CodeEditor } from './compiler/CodeEditor';
 import { OutputWindow } from './compiler/OutputWindow';
+import { supabase } from "@/integrations/supabase/client";
 
 export const CodeCompiler = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('javascript');
@@ -14,15 +15,15 @@ export const CodeCompiler = () => {
 
   const compileCode = async (code: string, language: string) => {
     try {
-      if (language === 'javascript') {
-        // For JavaScript, we use Function constructor to create a safe execution environment
-        const safeEval = new Function(code);
-        const result = safeEval();
-        return result !== undefined ? String(result) : 'undefined';
-      } else {
-        // For other languages, show a placeholder message
-        return `Code written in ${language}:\n\n${code}\n\nNote: This is a preview. The actual compilation would require a backend service.`;
-      }
+      const { data, error } = await supabase.functions.invoke('compile-code', {
+        body: {
+          code,
+          language
+        }
+      });
+
+      if (error) throw error;
+      return data.output;
     } catch (error) {
       if (error instanceof Error) {
         return `Error: ${error.message}`;
