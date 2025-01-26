@@ -3,6 +3,7 @@ import { Upload, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
+import { generateQuestionsFromContent } from '@/utils/openai';
 
 interface Question {
   question: string;
@@ -39,14 +40,16 @@ export const FileScanner = () => {
     setIsLoading(true);
     try {
       const content = await readFileContent(file);
-      // For demo purposes, generating mock questions
-      // In a real app, you'd want to use an AI service to generate questions
-      const generatedQuestions = generateMockQuestions(content);
+      const generatedQuestions = await generateQuestionsFromContent(content);
       setQuestions(generatedQuestions);
+      toast({
+        title: "Questions Generated",
+        description: "Successfully generated questions from your file",
+      });
     } catch (error) {
       toast({
-        title: "Error reading file",
-        description: "There was an error processing your file. Please try again.",
+        title: "Error processing file",
+        description: "There was an error generating questions. Please check your OpenAI API key and try again.",
         variant: "destructive"
       });
     } finally {
@@ -68,15 +71,6 @@ export const FileScanner = () => {
         reader.readAsText(file);
       }
     });
-  };
-
-  const generateMockQuestions = (content: string): Question[] => {
-    // This is a mock implementation
-    // In a real app, you'd want to use an AI service to generate relevant questions
-    return Array.from({ length: 10 }, (_, i) => ({
-      question: `Question ${i + 1} about the uploaded content?`,
-      answer: `Sample answer ${i + 1} based on the content analysis.`
-    }));
   };
 
   return (
