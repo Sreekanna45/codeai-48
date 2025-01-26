@@ -11,6 +11,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [lastAttempt, setLastAttempt] = useState(0);
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -47,7 +48,15 @@ const SignUp = () => {
     
     if (!validateForm()) return;
 
+    // Check if enough time has passed since last attempt
+    const now = Date.now();
+    if (now - lastAttempt < 4000) {
+      toast.error("Please wait a few seconds before trying again");
+      return;
+    }
+
     setLoading(true);
+    setLastAttempt(now);
     
     try {
       console.log("Starting signup process...");
@@ -65,7 +74,14 @@ const SignUp = () => {
 
       console.log("Signup response:", { signUpData, signUpError });
 
-      if (signUpError) throw signUpError;
+      if (signUpError) {
+        if (signUpError.message.includes("rate limit")) {
+          toast.error("Please wait a few seconds before trying again");
+        } else {
+          throw signUpError;
+        }
+        return;
+      }
 
       if (signUpData.user) {
         const { error: profileError } = await supabase
@@ -88,7 +104,11 @@ const SignUp = () => {
       }
     } catch (error: any) {
       console.error("Signup error:", error);
-      toast.error(error.message || "An error occurred during signup. Please try again.");
+      if (error.message.includes("rate limit")) {
+        toast.error("Please wait a few seconds before trying again");
+      } else {
+        toast.error(error.message || "An error occurred during signup. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -167,7 +187,11 @@ const SignUp = () => {
             />
           </div>
           
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button 
+            type="submit" 
+            className="w-full" 
+            disabled={loading}
+          >
             {loading ? "Signing up..." : "Sign Up"}
           </Button>
 
