@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchBar } from "@/components/SearchBar";
 import { TopLanguages } from "@/components/TopLanguages";
-import { CodeCompiler } from "@/components/CodeCompiler";
 import { ManualReview } from "@/components/ManualReview";
 import { Menu, LogOut, Home, FileText, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -172,11 +171,6 @@ const Index = () => {
             <TopLanguages />
           </section>
         )}
-        
-        <section>
-          <h2 className="text-2xl font-semibold mb-6 text-primary">Code Compiler</h2>
-          <CodeCompiler />
-        </section>
         
         <section>
           <h2 className="text-2xl font-semibold mb-6 text-primary">Manual Review</h2>
