@@ -1,15 +1,44 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, FileText } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { generateExamQuestions } from '@/data/programmingLanguages';
 
 const FileAnalysis = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [questions, setQuestions] = useState<Array<{ question: string; answer: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [fileContent, setFileContent] = useState<string>('');
+
+  const generateQuestionsFromContent = (content: string): Array<{ question: string; answer: string }> => {
+    // Basic content analysis to generate relevant questions
+    const questions = [];
+    
+    if (content.includes('function') || content.includes('class') || content.includes('const')) {
+      questions.push({
+        question: "What programming concepts are used in this code?",
+        answer: "The code contains JavaScript/TypeScript concepts including functions, classes, or constants."
+      });
+    }
+    
+    if (content.includes('import') || content.includes('export')) {
+      questions.push({
+        question: "How is modularity implemented in this code?",
+        answer: "The code uses ES6 module system with import/export statements for modularity."
+      });
+    }
+
+    // Add generic questions if no specific patterns are found
+    if (questions.length === 0) {
+      questions.push({
+        question: "What is the main purpose of this file?",
+        answer: "This file contains content that needs to be analyzed for educational purposes."
+      });
+    }
+
+    return questions;
+  };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -17,19 +46,26 @@ const FileAnalysis = () => {
 
     setIsLoading(true);
     try {
-      // Read file content
-      const text = await file.text();
-      
-      // Generate questions based on file content
-      const examQuestions = generateExamQuestions('javascript').slice(0, 10);
-      
-      // Format questions and answers
-      const formattedQuestions = examQuestions.map(q => ({
-        question: q.question,
-        answer: q.correctAnswer
-      }));
-
-      setQuestions(formattedQuestions);
+      if (file.type.startsWith('text/') || file.type.includes('javascript') || file.type.includes('typescript')) {
+        // Handle text files
+        const text = await file.text();
+        setFileContent(text);
+        const generatedQuestions = generateQuestionsFromContent(text);
+        setQuestions(generatedQuestions);
+      } else if (file.type.includes('pdf') || file.type.includes('image')) {
+        // For PDF and images, show a more appropriate message
+        setFileContent(`File type: ${file.type}`);
+        setQuestions([
+          {
+            question: "What type of file was uploaded?",
+            answer: `A ${file.type} file was uploaded. For full PDF and image analysis, please connect to a backend service.`
+          },
+          {
+            question: "What is the file size?",
+            answer: `The file size is ${(file.size / 1024).toFixed(2)} KB`
+          }
+        ]);
+      }
       
       toast({
         title: "Success",
