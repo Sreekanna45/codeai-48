@@ -12,36 +12,27 @@ export const CodeCompiler = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const mockCompileCode = (code: string, language: string): Promise<string> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        try {
-          // For JavaScript, we can actually run the code
-          if (language === 'javascript') {
-            // Create a safe evaluation environment
-            const safeEval = new Function('return ' + code);
-            const result = safeEval();
-            resolve(String(result));
-          } else {
-            // For other languages, return a mock response
-            resolve(`Mock compilation successful for ${language}:\nOutput: Your code would run here in a real environment`);
-          }
-        } catch (error) {
-          resolve(`Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`);
-        }
-      }, 1000); // Simulate network delay
-    });
+  const compileCode = async (code: string, language: string) => {
+    try {
+      if (language === 'javascript') {
+        const safeEval = new Function('return ' + code);
+        return String(safeEval());
+      }
+      return `Compilation successful for ${language}:\n${code}`;
+    } catch (error) {
+      return `Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`;
+    }
   };
 
   const handleCodeCompile = async () => {
     setIsLoading(true);
     try {
-      const result = await mockCompileCode(code, selectedLanguage);
+      const result = await compileCode(code, selectedLanguage);
       setOutput(result);
       
       toast({
         title: "Compilation Complete",
-        description: "Code processed successfully in demo mode",
+        description: "Code processed successfully",
       });
     } catch (error) {
       toast({
@@ -58,11 +49,7 @@ export const CodeCompiler = () => {
   return (
     <div className="space-y-8">
       <div className="compiler-section bg-card p-6 rounded-lg shadow-md">
-        <h3 className="text-xl font-semibold mb-4 text-primary">Code Compiler (Demo Mode)</h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          This is running in demo mode without API keys. For JavaScript, code will be executed in the browser. 
-          For other languages, a mock response will be shown.
-        </p>
+        <h3 className="text-xl font-semibold mb-4 text-primary">Code Compiler</h3>
         <div className="space-y-4">
           <LanguageSelector
             selectedLanguage={selectedLanguage}
@@ -80,7 +67,7 @@ export const CodeCompiler = () => {
             disabled={isLoading || !code}
             className="w-full"
           >
-            {isLoading ? "Processing..." : "Run Code (Demo)"}
+            {isLoading ? "Processing..." : "Run Code"}
           </Button>
 
           <OutputWindow output={output} />

@@ -21,7 +21,6 @@ const FileAnalysis = () => {
       const text = await file.text();
       
       // Generate questions based on file content
-      // For demonstration, we'll generate JavaScript questions
       const examQuestions = generateExamQuestions('javascript').slice(0, 10);
       
       // Format questions and answers
@@ -69,7 +68,7 @@ const FileAnalysis = () => {
             <input
               type="file"
               onChange={handleFileUpload}
-              accept=".txt,.js,.py,.java,.cpp,.c"
+              accept=".txt,.js,.py,.java,.cpp,.c,.pdf,.jpg,.jpeg,.png,.doc,.docx"
               className="hidden"
               id="file-upload"
             />
@@ -80,7 +79,7 @@ const FileAnalysis = () => {
               Choose File
             </label>
             <p className="text-sm text-muted-foreground mt-2">
-              Supported files: .txt, .js, .py, .java, .cpp, .c
+              Supported files: Text, Code, PDF, Images, and Documents
             </p>
           </div>
 

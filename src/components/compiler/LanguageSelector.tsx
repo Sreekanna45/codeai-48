@@ -1,6 +1,13 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { programmingLanguages } from '@/data/programmingLanguages';
+
+const mainLanguages = {
+  javascript: { name: "JavaScript" },
+  python: { name: "Python" },
+  java: { name: "Java" },
+  cpp: { name: "C++" },
+  csharp: { name: "C#" }
+};
 
 interface LanguageSelectorProps {
   selectedLanguage: string;
@@ -17,9 +24,9 @@ export const LanguageSelector = ({ selectedLanguage, onLanguageChange }: Languag
         <SelectValue placeholder="Select Language" />
       </SelectTrigger>
       <SelectContent>
-        {Object.keys(programmingLanguages).map((lang) => (
+        {Object.entries(mainLanguages).map(([lang, info]) => (
           <SelectItem key={lang} value={lang}>
-            {programmingLanguages[lang].name}
+            {info.name}
           </SelectItem>
         ))}
       </SelectContent>
