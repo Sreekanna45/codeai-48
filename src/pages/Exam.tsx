@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { saveExamResult } from '../data/programmingLanguages';
+import { Home } from "lucide-react";
 
 interface ExamResults {
   score: number;
@@ -20,6 +21,7 @@ const Exam = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [examResults, setExamResults] = useState<ExamResults | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const examData = localStorage.getItem('currentExam');
@@ -29,21 +31,23 @@ const Exam = () => {
     }
     const parsedExam = JSON.parse(examData);
     setCurrentExam(parsedExam);
-    // Initialize selectedAnswers array with empty strings
     setSelectedAnswers(new Array(parsedExam.questions.length).fill(''));
+    setIsLoading(false);
   }, [navigate]);
 
-  if (!currentExam) return null;
-
-  const currentQuestion = currentExam.questions[currentExam.currentQuestion];
+  const handleHomeClick = () => {
+    navigate("/home");
+  };
 
   const handleAnswerSelect = (answer: string) => {
+    if (!currentExam) return;
     const newAnswers = [...selectedAnswers];
     newAnswers[currentExam.currentQuestion] = answer;
     setSelectedAnswers(newAnswers);
   };
 
   const handleQuestionChange = (index: number) => {
+    if (!currentExam) return;
     const updatedExam = {
       ...currentExam,
       currentQuestion: index,
@@ -53,7 +57,7 @@ const Exam = () => {
   };
 
   const handleSubmitExam = () => {
-    // Check if all questions are answered
+    if (!currentExam) return;
     if (selectedAnswers.some(answer => answer === '')) {
       toast({
         title: "Please answer all questions",
@@ -62,7 +66,6 @@ const Exam = () => {
       return;
     }
 
-    // Calculate score
     const score = selectedAnswers.filter(
       (answer, index) => answer === currentExam.questions[index].correctAnswer
     ).length;
@@ -74,7 +77,6 @@ const Exam = () => {
       questions: currentExam.questions,
     };
 
-    // Save result
     saveExamResult({
       language: currentExam.language,
       score,
@@ -87,10 +89,48 @@ const Exam = () => {
     localStorage.removeItem('currentExam');
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background p-6">
+        <div className="container mx-auto max-w-3xl">
+          <div className="flex items-center gap-4 mb-6">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleHomeClick}
+              className="hover:bg-secondary rounded-lg transition-colors"
+            >
+              <Home className="h-6 w-6 text-primary" />
+            </Button>
+          </div>
+          <Card className="bg-card p-6 rounded-xl shadow-md">
+            <div className="flex justify-center items-center h-40">
+              <p className="text-lg text-muted-foreground">Loading exam...</p>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentExam) {
+    return null;
+  }
+
   if (showResults && examResults) {
     return (
       <div className="min-h-screen bg-background p-6">
         <div className="container mx-auto max-w-3xl">
+          <div className="flex items-center gap-4 mb-6">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleHomeClick}
+              className="hover:bg-secondary rounded-lg transition-colors"
+            >
+              <Home className="h-6 w-6 text-primary" />
+            </Button>
+          </div>
           <Card className="bg-card p-6 rounded-xl shadow-md">
             <h1 className="text-2xl font-bold mb-6 text-primary">
               Exam Results - {currentExam.language}
@@ -126,6 +166,16 @@ const Exam = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="container mx-auto max-w-3xl">
+        <div className="flex items-center gap-4 mb-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleHomeClick}
+            className="hover:bg-secondary rounded-lg transition-colors"
+          >
+            <Home className="h-6 w-6 text-primary" />
+          </Button>
+        </div>
         <Card className="bg-card p-6 rounded-xl shadow-md">
           <h1 className="text-2xl font-bold mb-6 text-primary">
             {currentExam.language} Exam
@@ -136,7 +186,6 @@ const Exam = () => {
             </p>
           </div>
           
-          {/* Question Navigation */}
           <div className="mb-6 flex flex-wrap gap-2">
             {currentExam.questions.map((_: any, index: number) => (
               <Button
@@ -153,14 +202,14 @@ const Exam = () => {
 
           <div className="space-y-6">
             <h2 className="text-lg font-medium text-foreground">
-              {currentQuestion.question}
+              {currentExam.questions[currentExam.currentQuestion].question}
             </h2>
             <RadioGroup
               value={selectedAnswers[currentExam.currentQuestion]}
               onValueChange={handleAnswerSelect}
               className="space-y-3"
             >
-              {currentQuestion.options.map((option: string, index: number) => (
+              {currentExam.questions[currentExam.currentQuestion].options.map((option: string, index: number) => (
                 <div key={index} className="flex items-center space-x-2">
                   <RadioGroupItem value={option} id={`option-${index}`} />
                   <label

@@ -3,49 +3,94 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const SignUp = () => {
+  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
-  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [lastAttempt, setLastAttempt] = useState(0);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const validateForm = () => {
+    if (!email || !username || !password || !confirmPassword) {
+      toast.error("All fields are required");
+      return false;
+    }
+
+    if (!email.includes("@")) {
+      toast.error("Please enter a valid email address");
+      return false;
+    }
+
+    if (username.length < 3) {
+      toast.error("Username must be at least 3 characters long");
+      return false;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return false;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return false;
+    }
+
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Rate limiting check
-    const now = Date.now();
-    if (now - lastAttempt < 4000) {
-      toast.error("Please wait 4 seconds before trying again");
-      return;
-    }
-    setLastAttempt(now);
-    
-    if (username.length < 8) {
-      toast.error("Username must be at least 8 characters long");
-      return;
-    }
-    
-    if (name.trim() === "") {
-      toast.error("Please enter your name");
-      return;
-    }
-    
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long");
-      return;
-    }
+    if (!validateForm()) return;
 
+    setLoading(true);
+    
     try {
-      // Store user data
-      localStorage.setItem("userName", name);
-      localStorage.setItem("userLoggedIn", "true");
+      console.log("Starting signup process...");
       
-      navigate("/home");
-      toast.success("Sign up successful!");
-    } catch (error) {
-      toast.error("An error occurred during sign up");
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username,
+          },
+          emailRedirectTo: window.location.origin + '/login',
+        },
+      });
+
+      console.log("Signup response:", { signUpData, signUpError });
+
+      if (signUpError) throw signUpError;
+
+      if (signUpData.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: signUpData.user.id,
+              username,
+              email,
+            }
+          ]);
+
+        if (profileError) {
+          console.error("Profile creation error:", profileError);
+          throw profileError;
+        }
+
+        toast.success("Sign up successful! Please check your email to verify your account.");
+        navigate("/login");
+      }
+    } catch (error: any) {
+      console.error("Signup error:", error);
+      toast.error(error.message || "An error occurred during signup. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,8 +108,23 @@ const SignUp = () => {
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
+            <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
+              Email
+            </label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full text-white bg-secondary/50 backdrop-blur-sm"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div>
             <label htmlFor="username" className="block text-sm font-medium text-white mb-2">
-              Username (min. 8 characters)
+              Username
             </label>
             <Input
               id="username"
@@ -72,22 +132,7 @@ const SignUp = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full text-white bg-secondary/50 backdrop-blur-sm"
-              placeholder="Enter username"
-              required
-            />
-          </div>
-          
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-white mb-2">
-              Name
-            </label>
-            <Input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full text-white bg-secondary/50 backdrop-blur-sm"
-              placeholder="Enter your name"
+              placeholder="Choose a username"
               required
             />
           </div>
@@ -106,10 +151,36 @@ const SignUp = () => {
               required
             />
           </div>
+
+          <div>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-white mb-2">
+              Confirm Password
+            </label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full text-white bg-secondary/50 backdrop-blur-sm"
+              placeholder="Confirm password"
+              required
+            />
+          </div>
           
-          <Button type="submit" className="w-full">
-            Sign Up
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Signing up..." : "Sign Up"}
           </Button>
+
+          <p className="text-center text-white">
+            Already have an account?{" "}
+            <button
+              type="button"
+              onClick={() => navigate("/login")}
+              className="text-primary hover:underline"
+            >
+              Login
+            </button>
+          </p>
         </form>
       </div>
     </div>
