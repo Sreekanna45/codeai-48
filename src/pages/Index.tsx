@@ -4,7 +4,8 @@ import { SearchBar } from "@/components/SearchBar";
 import { TopLanguages } from "@/components/TopLanguages";
 import { CodeCompiler } from "@/components/CodeCompiler";
 import { ManualReview } from "@/components/ManualReview";
-import { Menu, LogOut, Home, Book } from "lucide-react";
+import { FileScanner } from "@/components/FileScanner";
+import { Menu, LogOut, Home, Book, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -27,6 +28,7 @@ const Index = () => {
   const [greeting, setGreeting] = useState("");
   const userName = localStorage.getItem("userName") || "User";
   const [showNotes, setShowNotes] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -85,6 +87,14 @@ const Index = () => {
             >
               <Book className="h-6 w-6 text-primary" />
             </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowScanner(!showScanner)}
+              className="hover:bg-secondary rounded-lg transition-colors"
+            >
+              <FileText className="h-6 w-6 text-primary" />
+            </Button>
             <h1 className="text-4xl font-bold text-white">code AI</h1>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -103,6 +113,8 @@ const Index = () => {
         </div>
 
         <SearchBar onSearchResult={setSearchResult} />
+        
+        {showScanner && <FileScanner />}
         
         {showNotes && (
           <section className="bg-card p-6 rounded-xl shadow-md">
