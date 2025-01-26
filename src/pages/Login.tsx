@@ -90,6 +90,18 @@ const Login = () => {
     }
   };
 
+  const testHelloWorld = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('hello-world', {
+        body: { name: 'User' }
+      })
+      if (error) throw error
+      console.log('Response from hello-world function:', data)
+    } catch (error) {
+      console.error('Error calling hello-world function:', error)
+    }
+  }
+
   return (
     <div 
       className="min-h-screen bg-background flex items-center justify-center bg-cover bg-center bg-no-repeat"
