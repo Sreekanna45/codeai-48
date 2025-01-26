@@ -15,16 +15,32 @@ export const CodeCompiler = () => {
   const compileCode = async (code: string, language: string) => {
     try {
       if (language === 'javascript') {
-        const safeEval = new Function('return ' + code);
-        return String(safeEval());
+        // For JavaScript, we use Function constructor to create a safe execution environment
+        const safeEval = new Function(code);
+        const result = safeEval();
+        return result !== undefined ? String(result) : 'undefined';
+      } else {
+        // For other languages, show a placeholder message
+        return `Code written in ${language}:\n\n${code}\n\nNote: This is a preview. The actual compilation would require a backend service.`;
       }
-      return `Compilation successful for ${language}:\n${code}`;
     } catch (error) {
-      return `Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`;
+      if (error instanceof Error) {
+        return `Error: ${error.message}`;
+      }
+      return 'An unknown error occurred';
     }
   };
 
   const handleCodeCompile = async () => {
+    if (!code.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter some code to compile",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const result = await compileCode(code, selectedLanguage);
